@@ -1,5 +1,5 @@
 name: sportconnect
-description: "A new Flutter project."
+description: "SportConnect flutter application."
 publish_to: 'none'
 version: 0.1.0
 
@@ -17,10 +17,18 @@ dev_dependencies:
   flutter_form_builder: ^9.0.0
 
 flutter:
+
   uses-material-design: true
-   assets:
-     - assets/images/
-  # fonts:
-  #   - family: MyCustomFont
-  #     fonts:
-  #       - asset:
+  assets:
+    - assets/
+
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: fonts/Poppins-Light.ttf
+        - asset: fonts/Poppins-Medium.ttf
+        - asset: fonts/Poppins-Regular.ttf
+        - asset: fonts/Poppins-Bold.ttf
+    - family: Montserrat
+      fonts:
+        - asset: fonts/Montserrat-Regular.otf
