@@ -3,7 +3,7 @@ class Location {
   final String name;
   final String address;
   final String contact;
-  final String coordinates; // Assuming a string format "lat,lng"
+  final String coordinates;
 
   Location({
     required this.idLocation,
@@ -13,7 +13,6 @@ class Location {
     required this.coordinates,
   });
 
-  // Factory constructor for creating a new Location instance from a map (e.g., JSON data).
   factory Location.fromJson(Map<String, dynamic> json) {
     return Location(
       idLocation: json['id_location'],
@@ -24,8 +23,6 @@ class Location {
     );
   }
 
-  // Method to convert Location instance into a map.
-  // Useful for converting the Location object to JSON format.
   Map<String, dynamic> toJson() {
     return {
       'id_location': idLocation,
