@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:sportconnect/src/pages/login_screen.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(const LoginScreen());
 }
 
 class MainApp extends StatelessWidget {
