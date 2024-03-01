@@ -1,45 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'register_screen.dart'; // Asegúrate de importar register_screen.dart
+import 'register_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var screenSize =
-        MediaQuery.of(context).size; // Obtiene el tamaño de la pantalla
+    var screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
       body: LayoutBuilder(
-        // Añade el widget LayoutBuilder aquí
         builder: (BuildContext context, BoxConstraints constraints) {
           return Center(
-            // Añade el widget Center aquí
             child: SingleChildScrollView(
-              // Añade el widget SingleChildScrollView aquí
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
-                      'assets/images/logo_full.png', // Reemplaza 'assets/tu_imagen.png' con la ruta de tu imagen
-                      width: screenSize.width *
-                          0.3, // Ajusta el tamaño de la imagen según tus necesidades
-                      height: screenSize.height *
-                          0.3, // Ajusta el tamaño de la imagen según tus necesidades
+                      'assets/images/logo_full.png',
+                      width: screenSize.width * 0.3,
+                      height: screenSize.height * 0.3,
                     ),
-                    const SizedBox(
-                        height:
-                            20.0), // Espacio entre la imagen y el formulario
+                    const SizedBox(height: 20.0),
                     FormBuilder(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
-                            width: constraints.maxWidth *
-                                0.6, // Ajusta el ancho del campo de texto
+                            width: constraints.maxWidth * 0.6,
                             child: FormBuilderTextField(
                               name: 'email',
                               decoration: const InputDecoration(
@@ -49,8 +40,7 @@ class LoginScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 16.0),
                           Container(
-                            width: constraints.maxWidth *
-                                0.6, // Ajusta el ancho del campo de texto
+                            width: constraints.maxWidth * 0.6,
                             child: FormBuilderTextField(
                               name: 'password',
                               decoration: const InputDecoration(

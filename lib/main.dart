@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sportconnect/src/pages/login_screen.dart';
+import 'package:sportconnect/src/pages/register_screen.dart';
+import 'package:sportconnect/src/pages/search_screen.dart';
 
 void main() {
   runApp(const MainApp());
@@ -11,7 +13,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: LoginScreen(),
+      home: SearchScreen(),
     );
   }
 }
