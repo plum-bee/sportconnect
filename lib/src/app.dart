@@ -35,7 +35,7 @@ class SportConnectApp extends StatelessWidget {
         // '/splash': (_) => const SplashScreen(),
         '/login': (_) => const LoginScreen(),
         '/register': (_) => const RegisterScreen(),
-        // '/search': (_) => const SearchScreen(),
+        '/search': (_) => const SearchScreen(),
       },
     );
   }
