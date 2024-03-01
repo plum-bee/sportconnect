@@ -30,8 +30,8 @@ doc/api/
 *.swift
 *.cc
 *.cmake
-*.cc
 *.cmake
+*.cc
 *.swift
-*.cc
 *.cmake
+*.cc
