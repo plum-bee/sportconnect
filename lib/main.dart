@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sportconnect/src/pages/login_screen.dart';
 
 void main() {
-  runApp(const LoginScreen());
+  runApp(const MainApp());
 }
 
 class MainApp extends StatelessWidget {
@@ -11,11 +11,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+      home: LoginScreen(),
     );
   }
 }
