@@ -1,35 +1,28 @@
 name: sportconnect
-description: "SportConnect flutter application."
-publish_to: 'none'
+description: "A new Flutter project."
+publish_to: "none"
 version: 0.1.0
 
 environment:
-  sdk: '>=3.3.0 <4.0.0'
+  sdk: ">=3.3.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  flutter_native_splash: ^1.2.0
+  supabase_flutter: ^1.10.25
+  flutter_form_builder: ^9.0.0
+  google_maps_flutter: ^2.1.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
-  flutter_form_builder: ^9.0.0
 
 flutter:
-
   uses-material-design: true
   assets:
-    - assets/
-
-  fonts:
-    - family: Poppins
-      fonts:
-        - asset: fonts/Poppins-Light.ttf
-        - asset: fonts/Poppins-Medium.ttf
-        - asset: fonts/Poppins-Regular.ttf
-        - asset: fonts/Poppins-Bold.ttf
-    - family: Montserrat
-      fonts:
-        - asset: fonts/Montserrat-Regular.otf
+    - assets/images/
+  # fonts:
+  #   - family: MyCustomFont
+  #     fonts:
+  #       - asset:

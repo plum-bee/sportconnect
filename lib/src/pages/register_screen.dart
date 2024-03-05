@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:sportconnect/src/pages/login_screen.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'register_screen.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatelessWidget {
+  const RegisterScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +32,26 @@ class LoginScreen extends StatelessWidget {
                           Container(
                             width: constraints.maxWidth * 0.6,
                             child: FormBuilderTextField(
+                              name: 'name',
+                              decoration: const InputDecoration(
+                                labelText: 'Name',
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16.0),
+                          Container(
+                            width: constraints.maxWidth * 0.6,
+                            child: FormBuilderTextField(
+                              name: 'surname',
+                              decoration: const InputDecoration(
+                                labelText: 'Surname',
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16.0),
+                          Container(
+                            width: constraints.maxWidth * 0.6,
+                            child: FormBuilderTextField(
                               name: 'email',
                               decoration: const InputDecoration(
                                 labelText: 'Email',
@@ -54,7 +74,7 @@ class LoginScreen extends StatelessWidget {
                             onPressed: () {
                               /* Logica */
                             },
-                            child: const Text('Login'),
+                            child: const Text('Sign Up'),
                           ),
                           const SizedBox(height: 16.0),
                           const Text('OR'),
@@ -62,17 +82,17 @@ class LoginScreen extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Text("Don't have an account?"),
+                              const Text('Have an account?'),
                               TextButton(
                                 onPressed: () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const RegisterScreen()),
+                                            const LoginScreen()),
                                   );
                                 },
-                                child: const Text('Sign up'),
+                                child: const Text('Log in'),
                               ),
                             ],
                           ),

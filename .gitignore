@@ -25,3 +25,13 @@ doc/api/
 
 .flutter-plugins
 .flutter-plugins-dependencies
+*.cc
+*.cmake
+*.swift
+*.cc
+*.cmake
+*.cmake
+*.cc
+*.swift
+*.cmake
+*.cc
