@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-//import 'package:sportconnect/src/pages/splas_screen.dart';
+import 'package:sportconnect/src/pages/splash_screen.dart';
 import 'package:sportconnect/src/pages/login_screen.dart';
 import 'package:sportconnect/src/pages/register_screen.dart';
 import 'package:sportconnect/src/pages/search_screen.dart';
@@ -25,14 +25,14 @@ class SportConnectApp extends StatelessWidget {
           ),
         ),
       ),
-      initialRoute: '/login',
+      initialRoute: '/splash',
       routes: <String, WidgetBuilder>{
         '/': (_) => const Scaffold(
               body: Center(
                 child: Text('Hello World!'),
               ),
             ),
-        // '/splash': (_) => const SplashScreen(),
+        '/splash': (_) => const SplashScreen(),
         '/login': (_) => const LoginScreen(),
         '/register': (_) => const RegisterScreen(),
         '/search': (_) => const SearchScreen(),
