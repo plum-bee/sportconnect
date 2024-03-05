@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-//import 'package:sportconnect/src/pages/splas_screen.dart';
+import 'package:sportconnect/src/pages/test_screen.dart';
 
 class SportConnectApp extends StatelessWidget {
   const SportConnectApp({super.key});
@@ -24,12 +24,7 @@ class SportConnectApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: <String, WidgetBuilder>{
-        '/': (_) => const Scaffold(
-              body: Center(
-                child: Text('Hello World!'),
-              ),
-            ),
-        // '/splash': (_) => const SplashScreen(),
+        '/': (_) => const TestScreen(),
       },
     );
   }
