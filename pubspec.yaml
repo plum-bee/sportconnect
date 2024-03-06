@@ -1,17 +1,17 @@
 name: sportconnect
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
-  sdk: '>=3.3.0 <4.0.0'
+  sdk: ">=3.3.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   supabase_flutter: ^1.10.25
   flutter_form_builder: ^9.0.0
-  get: ^4.6.6
+  google_maps_flutter: ^2.1.1
 
 dev_dependencies:
   flutter_test:
@@ -25,4 +25,4 @@ flutter:
   # fonts:
   #   - family: MyCustomFont
   #     fonts:
-  #       - asset: 
+  #       - asset:
