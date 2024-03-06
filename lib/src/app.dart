@@ -24,7 +24,7 @@ class SportConnectApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: <String, WidgetBuilder>{
-        '/': (_) => const TestScreen(),
+        '/': (_) => TestScreen(),
       },
     );
   }

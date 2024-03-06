@@ -1,4 +1,4 @@
-import 'dart:convert';
+import 'package:sportconnect/src/models/user_sport_skill.dart';
 
 class Member {
   final String id;
@@ -7,6 +7,7 @@ class Member {
   final String email;
   final String? avatarUrl;
   final DateTime? createdAt;
+  List<UserSportSkill> userSportsSkills;
 
   Member({
     required this.id,
@@ -15,21 +16,22 @@ class Member {
     required this.email,
     this.avatarUrl,
     this.createdAt,
+    required this.userSportsSkills,
   });
 
-  factory Member.fromMap(Map<String, dynamic> map) {
+  factory Member.fromMap(
+      Map<String, dynamic> map, List<UserSportSkill> userSportsSkills) {
     return Member(
-      id: map['id_user'] as String,
-      name: map['name'] as String,
-      surname: map['surname'] as String,
-      email: map['email'] as String,
-      avatarUrl: map['avatar_url'] as String?,
+      id: map['id_user'],
+      name: map['name'],
+      surname: map['surname'],
+      email: map['email'],
+      avatarUrl: map['avatar_url'],
       createdAt:
           map['created_at'] != null ? DateTime.parse(map['created_at']) : null,
+      userSportsSkills: userSportsSkills,
     );
   }
-
-  factory Member.fromJson(String source) => Member.fromMap(json.decode(source));
 
   Map<String, dynamic> toJson() {
     return {
@@ -38,7 +40,7 @@ class Member {
       'surname': surname,
       'email': email,
       'avatar_url': avatarUrl,
-      'created_at': createdAt?.toIso8601String(),
+      'created_at': createdAt?.toIso8601String()
     };
   }
 
