@@ -3,7 +3,7 @@ import 'package:sportconnect/src/models/member.dart';
 import 'package:sportconnect/src/models/member_sport_skill.dart';
 
 class MemberService {
-  final String _tableName = 'users';
+  final String _tableName = 'members';
 
   Future<Member> getMemberById(String userId) async {
     final userResponse =
