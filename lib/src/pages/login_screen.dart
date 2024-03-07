@@ -1,9 +1,71 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'register_screen.dart';
+import 'package:sportconnect/main.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
+  bool _isLoading = false;
+
+  Future<void> _signIn() async {
+    final form = _formKey.currentState;
+    if (form?.saveAndValidate() ?? false) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      final email = form?.fields['email']?.value;
+      final password = form?.fields['password']?.value;
+
+      try {
+        await supabase.auth.signInWithPassword(
+          email: email.trim(),
+          password: password.trim(),
+        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Sign in successful!')),
+          );
+        }
+      } on AuthException catch (error) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(error.message),
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+          );
+        }
+      } catch (error) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Unexpected error occurred'),
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in the form correctly')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +88,7 @@ class LoginScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 20.0),
                     FormBuilder(
+                      key: _formKey,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -49,16 +112,19 @@ class LoginScreen extends StatelessWidget {
                               obscureText: true,
                             ),
                           ),
-                          const SizedBox(height: 16.0),
+                          const SizedBox(height: 20.0),
                           ElevatedButton(
-                            onPressed: () {
-                              /* Logica */
-                            },
-                            child: const Text('Login'),
+                            onPressed: _isLoading ? null : () => _signIn(),
+                            child: _isLoading
+                                ? const CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white),
+                                  )
+                                : const Text('Login'),
                           ),
-                          const SizedBox(height: 16.0),
+                          const SizedBox(height: 20.0),
                           const Text('OR'),
-                          const SizedBox(height: 16.0),
+                          const SizedBox(height: 20.0),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -68,8 +134,7 @@ class LoginScreen extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            const RegisterScreen()),
+                                        builder: (context) => RegisterScreen()),
                                   );
                                 },
                                 child: const Text('Sign up'),

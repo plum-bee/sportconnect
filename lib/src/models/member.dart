@@ -1,4 +1,4 @@
-import 'package:sportconnect/src/models/user_sport_skill.dart';
+import 'package:sportconnect/src/models/member_sport_skill.dart';
 
 class Member {
   final String id;
