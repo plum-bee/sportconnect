@@ -14,6 +14,13 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   bool _isLoading = false;
+  bool _obscureText = true;
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
 
   void _signUp(BuildContext context) async {
     final form = _formKey.currentState;
@@ -129,10 +136,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             width: constraints.maxWidth * 0.6,
                             child: FormBuilderTextField(
                               name: 'password',
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 labelText: 'Password',
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _obscureText
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                  ),
+                                  onPressed: _togglePasswordVisibility,
+                                ),
                               ),
-                              obscureText: true,
+                              obscureText: _obscureText,
                             ),
                           ),
                           const SizedBox(height: 16.0),
