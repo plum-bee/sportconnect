@@ -11,7 +11,7 @@ class UserProfileScreen extends StatelessWidget {
 
   Future<void> _logout(BuildContext context) async {
     await Supabase.instance.client.auth.signOut();
-    Navigator.of(context).pushReplacementNamed('/login');
+    Navigator.of(context).pushReplacementNamed('/search');
   }
 
   @override
