@@ -32,4 +32,14 @@ class Location {
       'coordinates': coordinates,
     };
   }
+
+  static Location fromMap(Map<String, dynamic> map) {
+    return Location(
+      idLocation: map['id_location'],
+      name: map['name'],
+      address: map['address'],
+      contact: map['contact'],
+      coordinates: map['coordinates'],
+    );
+  }
 }
