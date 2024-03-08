@@ -14,6 +14,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
   bool _isLoading = false;
+  bool _isPasswordHidden = true; // Add this line
 
   Future<void> _signIn() async {
     final form = _formKey.currentState;
@@ -107,10 +108,24 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: constraints.maxWidth * 0.6,
                             child: FormBuilderTextField(
                               name: 'password',
-                              decoration: const InputDecoration(
+                              obscureText: _isPasswordHidden, // Use the state
+                              decoration: InputDecoration(
                                 labelText: 'Password',
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    // Toggle the icon
+                                    _isPasswordHidden
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                  ),
+                                  onPressed: () {
+                                    // Update the state to toggle password visibility
+                                    setState(() {
+                                      _isPasswordHidden = !_isPasswordHidden;
+                                    });
+                                  },
+                                ),
                               ),
-                              obscureText: true,
                             ),
                           ),
                           const SizedBox(height: 20.0),
