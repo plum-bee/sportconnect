@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -12,9 +12,19 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 3), () {
+    _navigateToNextPage();
+  }
+
+  Future<void> _navigateToNextPage() async {
+    await Future.delayed(Duration.zero);
+    if (!mounted) return;
+
+    final session = Supabase.instance.client.auth.currentSession;
+    if (session != null) {
+      Navigator.of(context).pushReplacementNamed('/profile');
+    } else {
       Navigator.of(context).pushReplacementNamed('/login');
-    });
+    }
   }
 
   @override
@@ -38,8 +48,7 @@ class _SplashScreenState extends State<SplashScreen> {
               AnimatedOpacity(
                 opacity: 1.0,
                 duration: const Duration(seconds: 2),
-                child:
-                    Image.asset('assets/images/logo.png', width: 200.0),
+                child: Image.asset('assets/images/logo.png', width: 200.0),
               ),
               const SizedBox(height: 30.0),
               const CircularProgressIndicator(

@@ -3,6 +3,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:sportconnect/src/pages/login_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sportconnect/main.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 
 class RegisterScreen extends StatefulWidget {
   RegisterScreen({super.key});

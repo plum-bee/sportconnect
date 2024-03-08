@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:sportconnect/src/pages/splash_screen.dart';
 import 'package:sportconnect/src/pages/login_screen.dart';
 import 'package:sportconnect/src/pages/register_screen.dart';
 import 'package:sportconnect/src/pages/search_screen.dart';
 import 'package:sportconnect/src/pages/profile_screen.dart';
-import 'package:sportconnect/src/pages/test_screen.dart';
+//import 'package:sportconnect/src/pages/test_screen.dart';
 
 class SportConnectApp extends StatelessWidget {
   const SportConnectApp({super.key});
