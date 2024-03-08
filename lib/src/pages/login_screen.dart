@@ -14,7 +14,13 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
   bool _isLoading = false;
-  bool _isPasswordHidden = true; // Add this line
+  bool _obscureText = true;
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
 
   Future<void> _signIn() async {
     final form = _formKey.currentState;
@@ -108,24 +114,18 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: constraints.maxWidth * 0.6,
                             child: FormBuilderTextField(
                               name: 'password',
-                              obscureText: _isPasswordHidden, // Use the state
                               decoration: InputDecoration(
                                 labelText: 'Password',
                                 suffixIcon: IconButton(
                                   icon: Icon(
-                                    // Toggle the icon
-                                    _isPasswordHidden
-                                        ? Icons.visibility_off
-                                        : Icons.visibility,
+                                    _obscureText
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
                                   ),
-                                  onPressed: () {
-                                    // Update the state to toggle password visibility
-                                    setState(() {
-                                      _isPasswordHidden = !_isPasswordHidden;
-                                    });
-                                  },
+                                  onPressed: _togglePasswordVisibility,
                                 ),
                               ),
+                              obscureText: _obscureText,
                             ),
                           ),
                           const SizedBox(height: 20.0),
