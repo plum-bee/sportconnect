@@ -3,6 +3,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:sportconnect/src/pages/login_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sportconnect/main.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 
 class RegisterScreen extends StatefulWidget {
   RegisterScreen({super.key});
@@ -14,13 +15,8 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   bool _isLoading = false;
-  bool _obscureText = true;
-
-  void _togglePasswordVisibility() {
-    setState(() {
-      _obscureText = !_obscureText;
-    });
-  }
+  bool _isPasswordHidden = true;
+  bool _isConfirmPasswordHidden = true;
 
   void _signUp(BuildContext context) async {
     final form = _formKey.currentState;
@@ -99,6 +95,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     const SizedBox(height: 20.0),
                     FormBuilder(
                       key: _formKey,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -136,21 +133,57 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             width: constraints.maxWidth * 0.6,
                             child: FormBuilderTextField(
                               name: 'password',
+                              obscureText: _isPasswordHidden,
                               decoration: InputDecoration(
                                 labelText: 'Password',
                                 suffixIcon: IconButton(
                                   icon: Icon(
-                                    _obscureText
-                                        ? Icons.visibility
-                                        : Icons.visibility_off,
+                                    _isPasswordHidden
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
                                   ),
-                                  onPressed: _togglePasswordVisibility,
+                                  onPressed: () {
+                                    setState(() {
+                                      _isPasswordHidden = !_isPasswordHidden;
+                                    });
+                                  },
                                 ),
                               ),
-                              obscureText: _obscureText,
                             ),
                           ),
                           const SizedBox(height: 16.0),
+                          Container(
+                            width: constraints.maxWidth * 0.6,
+                            child: FormBuilderTextField(
+                              name: 'confirm_password',
+                              obscureText: _isConfirmPasswordHidden,
+                              decoration: InputDecoration(
+                                labelText: 'Confirm Password',
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _isConfirmPasswordHidden
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isConfirmPasswordHidden =
+                                          !_isConfirmPasswordHidden;
+                                    });
+                                  },
+                                ),
+                              ),
+                              validator: (val) {
+                                if (val !=
+                                    _formKey.currentState?.fields['password']
+                                        ?.value) {
+                                  return 'Passwords do not match';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 20.0),
                           ElevatedButton(
                             onPressed: () => _signUp(context),
                             child: _isLoading
