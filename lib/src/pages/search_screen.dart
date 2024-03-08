@@ -23,6 +23,36 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
 
+    Widget buildBottomAppBar() {
+      return BottomAppBar(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.home),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(Icons.qr_code),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(Icons.person_outlined),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(Icons.person),
+              onPressed: () {},
+            ),
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Center(
@@ -86,6 +116,7 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ),
       ),
+      bottomNavigationBar: buildBottomAppBar(),
     );
   }
 }
