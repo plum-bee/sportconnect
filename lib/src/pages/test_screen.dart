@@ -1,46 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sportconnect/src/controllers/member_controller.dart';
+import 'package:sportconnect/src/controllers/event_controller.dart';
 
 class TestScreen extends StatelessWidget {
   TestScreen({Key? key}) : super(key: key);
 
-  final MemberController memberController = Get.put(MemberController());
+  final EventController eventController = Get.put(EventController());
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Test Screen'),
-      ),
-      body: Obx(() {
-        if (memberController.currentUser.value == null) {
-          return Center(child: CircularProgressIndicator());
-        } else {
-          final member = memberController.currentUser.value!;
-          return ListView(
-            children: [
+return Scaffold(
+  appBar: AppBar(
+    title: const Text('Test Screen'),
+  ),
+  body: GetX<EventController>(
+    builder: (controller) {
+      if (eventController.eventsList.value == null) {
+        return const Center(child: CircularProgressIndicator());
+      } else {
+        return ListView(
+          children: [
+            for (var index = 0; index < controller.eventsList.value.length; index++) ...[
               ListTile(
-                title: Text('Name'),
-                subtitle: Text('${member.name} ${member.surname}'),
-              ),
-              ListTile(
-                title: Text('Email'),
-                subtitle: Text(member.email),
-              ),
-              ListTile(
-                title: Text('Sports and Skill Levels'),
+                title: Text('Event ID: ${controller.eventsList.value[index].id}'),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: member.userSportsSkills
-                      .map((e) => Text('${e.sport.name}: ${e.skillLevel.name}'))
-                      .toList(),
+                  children: [
+                    Text('Sport: ${controller.eventsList.value[index].sport.name}'),
+                    Text('Location: ${controller.eventsList.value[index].location.name}'),
+                    Text('Date: ${controller.eventsList.value[index].date.toString()}'),
+                    Text('Description: ${controller.eventsList.value[index].description}'),
+                  ],
                 ),
               ),
             ],
-          );
-        }
-      }),
-    );
+          ],
+        );
+      }
+    },
+  ),
+);
+
   }
 }

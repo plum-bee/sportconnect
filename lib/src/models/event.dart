@@ -3,7 +3,7 @@ import 'package:sportconnect/src/models/member.dart';
 import 'package:sportconnect/src/models/sport.dart';
 
 class Event {
-  final String id;
+  final int id;
   final Sport sport;
   final Location location;
   final DateTime date;
@@ -21,12 +21,24 @@ class Event {
 
   factory Event.fromMap(Map<String, dynamic> map) {
     return Event(
-      id: map['id'],
+      id: map['id_event'],
       sport: Sport.fromMap(map['sport']),
       location: Location.fromMap(map['location']),
       date: DateTime.parse(map['date']),
       description: map['description'],
-      participants: [], 
+      participants: [],
+    );
+  }
+  factory Event.fromJson(Map<String, dynamic> json) {
+    return Event(
+      id: json['id_event'] as int? ?? 0,
+      sport: Sport.fromMap(json['sport'] as Map<String, dynamic>),
+      location: Location.fromJson(json['location'] as Map<String, dynamic>),
+      date: json['date'] != null
+          ? DateTime.parse(json['date'] as String)
+          : DateTime.now(),
+      description: json['description'] as String? ?? '',
+      participants: [], // Puedes agregar los participantes aquí si es necesario
     );
   }
 
@@ -37,7 +49,6 @@ class Event {
       'location': location.toJson(),
       'date': date.toIso8601String(),
       'description': description,
-      // Participants are not included in JSON as they might be too large to store inline
     };
   }
 
