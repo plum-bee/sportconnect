@@ -1,12 +1,13 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:sportconnect/src/pages/login_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sportconnect/main.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 
 class RegisterScreen extends StatefulWidget {
-  RegisterScreen({super.key});
+  const RegisterScreen({super.key});
 
   @override
   _RegisterScreenState createState() => _RegisterScreenState();

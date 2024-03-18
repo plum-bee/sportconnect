@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -8,8 +10,6 @@ class SearchScreen extends StatefulWidget {
   @override
   _SearchScreenState createState() => _SearchScreenState();
 }
-
-//Poner el combo box a la izquierda y mirar el tema de la api de google maps
 
 class _SearchScreenState extends State<SearchScreen> {
   final List<String> items = [
@@ -33,23 +33,23 @@ class _SearchScreenState extends State<SearchScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             IconButton(
-              icon: Icon(Icons.home),
+              icon: const Icon(Icons.home),
               onPressed: () {},
             ),
             IconButton(
-              icon: Icon(Icons.search),
+              icon: const Icon(Icons.search),
               onPressed: () {},
             ),
             IconButton(
-              icon: Icon(Icons.qr_code),
+              icon: const Icon(Icons.qr_code),
               onPressed: () {},
             ),
             IconButton(
-              icon: Icon(Icons.person_outlined),
+              icon: const Icon(Icons.person_outlined),
               onPressed: () {},
             ),
             IconButton(
-              icon: Icon(Icons.person),
+              icon: const Icon(Icons.person),
               onPressed: () {},
             ),
           ],
