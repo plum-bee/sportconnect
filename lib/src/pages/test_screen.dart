@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sportconnect/src/controllers/event_controller.dart'; 
+import 'package:sportconnect/src/controllers/event_controller.dart';
 import 'package:sportconnect/src/models/event.dart';
 
 class TestScreen extends StatelessWidget {
@@ -12,46 +12,42 @@ class TestScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Events List'),
+        title: Text('Events Details'),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Obx(() {
-              if (eventController.eventsList.value.isEmpty) { 
-                return const Center(child: CircularProgressIndicator());
-              } else {
-                return ListView.builder(
-                  itemCount: eventController.eventsList.value.length,
-                  itemBuilder: (context, index) {
-                    Event event = eventController.eventsList.value[index]; 
-                    return ListTile(
-                      subtitle: Text('ID: ${event.idEvent}'), 
-                      title: Text(event.sport.name),
-                      onTap: () {
-                        eventController.fetchEventById(event.idEvent); 
-                      },
-                    );
-                  },
-                );
-              }
-            }),
-          ),
-          Obx(() {
-            return Text(
-              'Selected Event: ${eventController.currentEvent.value?.idEvent ?? "None"}',
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      body: Obx(() {
+        if (eventController.eventsList.value.isEmpty) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        return ListView.builder(
+          itemCount: eventController.eventsList.value.length,
+          itemBuilder: (context, index) {
+            Event event = eventController.eventsList.value[index];
+            return Card(
+              margin: EdgeInsets.all(8),
+              child: ListTile(
+                title: Text('Event ID: ${event.idEvent}'),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Sport Name: ${event.sportName ?? "Not available"}'),
+                    Text(
+                        'Skill Level: ${event.skillLevelName ?? "Not available"}'),
+                    Text(
+                        'Location Name: ${event.locationName ?? "Not available"}'),
+                    Text(
+                        'Start Time: ${event.startTime?.toIso8601String() ?? "Not specified"}'),
+                  ],
+                ),
+                isThreeLine: true,
+                trailing: event.isFinished
+                    ? Icon(Icons.check_circle, color: Colors.green)
+                    : Icon(Icons.hourglass_empty, color: Colors.red),
+              ),
             );
-          }),
-          ElevatedButton(
-            onPressed: () {
-              int someEventId = 1; 
-              eventController.fetchEventById(someEventId);
-            },
-            child: const Text('Fetch Event with ID 1'),
-          ),
-        ],
-      ),
+          },
+        );
+      }),
     );
   }
 }
