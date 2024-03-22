@@ -1,62 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sportconnect/src/controllers/location_controller.dart';
-import 'package:sportconnect/src/models/location.dart';
+import 'package:sportconnect/src/controllers/event_controller.dart'; 
+import 'package:sportconnect/src/models/event.dart';
 
 class TestScreen extends StatelessWidget {
-  TestScreen({Key? key}) : super(key: key);
+  final EventController eventController = Get.put(EventController());
 
-  final LocationController locationController = Get.put(LocationController());
+  TestScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Test Locations'),
+        title: const Text('Events List'),
       ),
       body: Column(
         children: [
           Expanded(
             child: Obx(() {
-              if (locationController.allLocations.isEmpty) {
-                return Center(child: Text('No locations found'));
+              if (eventController.eventsList.value.isEmpty) { 
+                return const Center(child: CircularProgressIndicator());
               } else {
                 return ListView.builder(
-                  itemCount: locationController.allLocations.length,
+                  itemCount: eventController.eventsList.value.length,
                   itemBuilder: (context, index) {
-                    Location location = locationController.allLocations[index];
+                    Event event = eventController.eventsList.value[index]; 
                     return ListTile(
-                      title: Text(location.name),
-                      subtitle: Text(location.address),
+                      subtitle: Text('ID: ${event.idEvent}'), 
+                      title: Text(event.sport.name),
+                      onTap: () {
+                        eventController.fetchEventById(event.idEvent); 
+                      },
                     );
                   },
                 );
               }
             }),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Enter Location ID',
-              ),
-              onSubmitted: (value) {
-                locationController.fetchLocationById(value.trim());
-              },
-            ),
-          ),
           Obx(() {
-            final location = locationController.currentLocation.value;
-            return location == null
-                ? Container()
-                : Card(
-                    child: ListTile(
-                      title: Text(location.name),
-                      subtitle: Text(location.address),
-                    ),
-                  );
+            return Text(
+              'Selected Event: ${eventController.currentEvent.value?.idEvent ?? "None"}',
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            );
           }),
+          ElevatedButton(
+            onPressed: () {
+              int someEventId = 1; 
+              eventController.fetchEventById(someEventId);
+            },
+            child: const Text('Fetch Event with ID 1'),
+          ),
         ],
       ),
     );
