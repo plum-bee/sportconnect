@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sportconnect/src/pages/test_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -10,10 +11,9 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
-  // Placeholders
-  static const List<Widget> _widgetOptions = <Widget>[
+  final List<Widget> _widgetOptions = <Widget>[
     Text('Home', style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
-    Text('Search', style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
+    TestScreen(), // Replaced the "Search" tab with TestScreen
     Text('QR', style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
     Text('Activity',
         style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),

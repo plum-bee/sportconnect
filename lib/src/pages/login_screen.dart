@@ -14,7 +14,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
   bool _isLoading = false;
-  bool _isPasswordHidden = true; // Add this line
+  bool _isPasswordHidden = true;
 
   Future<void> _signIn() async {
     final form = _formKey.currentState;
@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
           password: password.trim(),
         );
         if (mounted) {
-          Navigator.of(context).pushReplacementNamed('/home');
+          Navigator.of(context).pushReplacementNamed('/profile');
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Sign in successful!')),
           );

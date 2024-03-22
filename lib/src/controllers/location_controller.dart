@@ -13,7 +13,7 @@ class LocationController extends GetxController {
     fetchAllLocations();
   }
 
-  void fetchLocationById(String locationId) async {
+  void fetchLocationById(int locationId) async {
     Location location = await locationService.getLocationById(locationId);
     currentLocation.value = location;
   }
