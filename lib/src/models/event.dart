@@ -1,7 +1,10 @@
+import 'package:sportconnect/src/models/sport.dart';
+
 class Event {
   final int idEvent;
   final int? idLocation;
   final int? idSport;
+  Sport sport;
   final int? idSkillLevel;
   final DateTime? startTime;
   final bool isFinished;
@@ -10,6 +13,7 @@ class Event {
     required this.idEvent,
     this.idLocation,
     this.idSport,
+    required this.sport,
     this.idSkillLevel,
     this.startTime,
     this.isFinished = false,
@@ -20,6 +24,7 @@ class Event {
       idEvent: map['id_event'],
       idLocation: map['id_location'],
       idSport: map['id_sport'],
+      sport: Sport.fromMap(map),
       idSkillLevel: map['id_skill_level'],
       startTime:
           map['start_time'] != null ? DateTime.parse(map['start_time']) : null,

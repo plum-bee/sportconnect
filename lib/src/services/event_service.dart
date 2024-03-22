@@ -11,13 +11,13 @@ class EventService {
         .eq('id_event', eventId)
         .single();
 
-    return Event.fromMap(eventResponse.data);
+    return Event.fromMap(eventResponse);
   }
 
   Future<List<Event>> getAllEvents() async {
     final eventsResponse = await supabase.from(_tableName).select();
 
-    final dataList = eventsResponse.data as List<dynamic>;
+    final dataList = eventsResponse as List<dynamic>;
     return dataList.map((event) => Event.fromMap(event)).toList();
   }
 
