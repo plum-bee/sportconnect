@@ -4,7 +4,7 @@ import 'package:sportconnect/src/models/location.dart';
 class LocationService {
   final String _tableName = 'locations';
 
-  Future<Location> getLocationById(String locationId) async {
+  Future<Location> getLocationById(int locationId) async {
     final locationResponse = await supabase
         .from(_tableName)
         .select()
