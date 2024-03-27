@@ -6,7 +6,6 @@ class Event {
   final DateTime? startTime;
   final bool isFinished;
 
-  // Additional fields to hold the fetched names
   String? sportName;
   String? skillLevelName;
   String? locationName;
@@ -32,12 +31,10 @@ class Event {
       startTime:
           map['start_time'] != null ? DateTime.parse(map['start_time']) : null,
       isFinished: map['is_finished'] ?? false,
-      // Names are not initialized from the map, as they are not stored in the table
     );
   }
 
   Map<String, dynamic> toJson() {
-    // Convert the event instance to a JSON-compatible map
     return {
       'id_event': idEvent,
       'id_location': idLocation,
@@ -45,7 +42,6 @@ class Event {
       'id_skill_level': idSkillLevel,
       'start_time': startTime?.toIso8601String(),
       'is_finished': isFinished,
-      // Note: The name fields are not included in the JSON, as they are not part of the table schema
     };
   }
 }
