@@ -4,7 +4,7 @@ class Event {
   final int? idSport;
   final int? idSkillLevel;
   final DateTime? startTime;
-  final bool isFinished;
+  final bool isRegistrationOpen;
 
   String? sportName;
   String? skillLevelName;
@@ -16,7 +16,7 @@ class Event {
     this.idSport,
     this.idSkillLevel,
     this.startTime,
-    this.isFinished = false,
+    this.isRegistrationOpen = false,
     this.sportName,
     this.skillLevelName,
     this.locationName,
@@ -30,7 +30,7 @@ class Event {
       idSkillLevel: map['id_skill_level'],
       startTime:
           map['start_time'] != null ? DateTime.parse(map['start_time']) : null,
-      isFinished: map['is_finished'] ?? false,
+      isRegistrationOpen: map['is_finished'] ?? false,
     );
   }
 
@@ -41,7 +41,7 @@ class Event {
       'id_sport': idSport,
       'id_skill_level': idSkillLevel,
       'start_time': startTime?.toIso8601String(),
-      'is_finished': isFinished,
+      'is_finished': isRegistrationOpen,
     };
   }
 }

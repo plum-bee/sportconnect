@@ -12,7 +12,7 @@ class EventController extends GetxController {
   final LocationService locationService = LocationService();
 
   final Rx<List<Event>> eventsList = Rx<List<Event>>([]);
-  final Rx<Event?> currentEvent = Rx<Event?>(null);
+  final Rx<List<Event>> upcomingEventsList = Rx<List<Event>>([]);
 
   @override
   void onInit() {
@@ -22,10 +22,18 @@ class EventController extends GetxController {
 
   Future<void> fetchEvents() async {
     List<Event> events = await eventService.getAllEvents();
+    List<Event> upcomingEvents = [];
+    var currentTime = DateTime.now();
+
     await Future.forEach<Event>(events, (event) async {
       await fetchEventDetails(event);
+      if (event.startTime!.isAfter(currentTime)) {
+        upcomingEvents.add(event);
+      }
     });
+
     eventsList.value = events;
+    upcomingEventsList.value = upcomingEvents;
   }
 
   Future<void> fetchEventDetails(Event event) async {

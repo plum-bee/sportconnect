@@ -28,7 +28,7 @@ class SportConnectApp extends StatelessWidget {
           ),
         ),
       ),
-      initialRoute: '/test',
+      initialRoute: '/splash',
       routes: <String, WidgetBuilder>{
         '/': (_) => const SearchScreen(),
         '/splash': (_) => const SplashScreen(),
@@ -36,7 +36,7 @@ class SportConnectApp extends StatelessWidget {
         '/register': (_) => RegisterScreen(),
         '/search': (_) => const SearchScreen(),
         '/profile': (_) => UserProfileScreen(),
-        '/home': (_) => const MainScreen(),
+        '/main': (_) => const MainScreen(),
         '/test': (_) => TestScreen(),
       },
     );

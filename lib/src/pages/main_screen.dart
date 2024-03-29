@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sportconnect/src/pages/test_screen.dart';
+import 'package:sportconnect/src/pages/home_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -12,8 +12,8 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _widgetOptions = <Widget>[
-    Text('Home', style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
-    TestScreen(), // Replaced the "Search" tab with TestScreen
+    HomeScreen(),
+    Text('Search', style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
     Text('QR', style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
     Text('Activity',
         style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
@@ -33,10 +33,11 @@ class _MainScreenState extends State<MainScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Image.asset(
           'assets/images/logo_text.png',
           width: screenSize.width * 0.4,
-          height: screenSize.height * 0.4,
+          height: kToolbarHeight,
         ),
         centerTitle: true,
       ),
@@ -67,7 +68,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.white,
+        selectedItemColor: Colors.amber[800],
         onTap: _onItemTapped,
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sportconnect/src/models/event.dart';
 
 class EventItemWidget extends StatelessWidget {
@@ -9,6 +10,9 @@ class EventItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget sportIcon = _getSportIcon(event.sportName ?? 'Unknown');
+    String formattedStartTime = event.startTime != null
+        ? DateFormat('EEE, MMM d, yyyy').format(event.startTime!)
+        : 'Date not set';
 
     Decoration containerDecoration = BoxDecoration(
       gradient: LinearGradient(
@@ -45,6 +49,9 @@ class EventItemWidget extends StatelessWidget {
                 Text(event.sportName ?? 'Sport Name',
                     style:
                         TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                SizedBox(height: 4.0),
+                Text(formattedStartTime,
+                    style: TextStyle(color: Colors.grey.shade600)),
                 SizedBox(height: 8.0),
                 Row(
                   children: [
@@ -65,10 +72,10 @@ class EventItemWidget extends StatelessWidget {
                         style: TextStyle(fontSize: 14.0)),
                   ],
                 ),
-                if (event.isFinished)
+                if (!event.isRegistrationOpen)
                   Padding(
                     padding: EdgeInsets.only(top: 8.0),
-                    child: Text("Event Completed",
+                    child: Text("Registration Closed",
                         style: TextStyle(
                             color: Colors.red,
                             fontSize: 12.0,
@@ -83,29 +90,15 @@ class EventItemWidget extends StatelessWidget {
   }
 
   Widget _getSportIcon(String sportName) {
-    Map<String, IconData> sportIcons = {
-      'basketball': Icons.sports_basketball,
-      'football': Icons.sports_football,
-      'soccer': Icons.sports_soccer,
-    };
-
-    // Default icon if sport not found in map
-    IconData iconData = sportIcons[sportName.toLowerCase()] ?? Icons.sports;
-
-    return Icon(iconData, color: _getIconColor(sportName));
-  }
-
-  Color _getIconColor(String sportName) {
-    // Example: you can expand this method to return different colors based on the sportName
     switch (sportName.toLowerCase()) {
       case 'basketball':
-        return Colors.orange;
+        return Icon(Icons.sports_basketball, color: Colors.orange);
       case 'football':
-        return Colors.brown;
+        return Icon(Icons.sports_football, color: Colors.brown);
       case 'soccer':
-        return Colors.green;
+        return Icon(Icons.sports_soccer, color: Colors.green);
       default:
-        return Colors.blue;
+        return Icon(Icons.sports, color: Colors.blue);
     }
   }
 }

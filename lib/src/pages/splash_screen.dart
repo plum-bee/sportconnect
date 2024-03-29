@@ -22,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     final session = Supabase.instance.client.auth.currentSession;
     if (session != null) {
-      Navigator.of(context).pushReplacementNamed('/home');
+      Navigator.of(context).pushReplacementNamed('/main');
     } else {
       Navigator.of(context).pushReplacementNamed('/login');
     }
