@@ -1,9 +1,17 @@
 import 'package:get/get.dart';
+import 'package:sportconnect/main.dart'; // Assuming this is where your supabase instance is initialized
 import 'package:sportconnect/src/models/event.dart';
 import 'package:sportconnect/src/services/event_service.dart';
 import 'package:sportconnect/src/services/sport_service.dart';
 import 'package:sportconnect/src/services/location_service.dart';
 import 'package:sportconnect/src/services/skill_level_service.dart';
+
+class UserEvent {
+  final Event event;
+  final bool participated;
+
+  UserEvent({required this.event, required this.participated});
+}
 
 class EventController extends GetxController {
   final EventService eventService = EventService();
@@ -12,12 +20,14 @@ class EventController extends GetxController {
   final LocationService locationService = LocationService();
 
   final Rx<List<Event>> eventsList = Rx<List<Event>>([]);
+  final Rx<List<UserEvent>> userEventsList = Rx<List<UserEvent>>([]);
   final Rx<List<Event>> upcomingEventsList = Rx<List<Event>>([]);
 
   @override
   void onInit() {
     super.onInit();
     fetchEvents();
+    fetchUserEvents();
   }
 
   Future<void> fetchEvents() async {
@@ -34,6 +44,24 @@ class EventController extends GetxController {
 
     eventsList.value = events;
     upcomingEventsList.value = upcomingEvents;
+  }
+
+  Future<void> fetchUserEvents() async {
+    String userId = supabase.auth.currentUser!.id;
+
+    var userEventsWithParticipation = await eventService.getUserEvents(userId);
+
+    List<UserEvent> userEvents = [];
+    await Future.forEach<Map<String, dynamic>>(userEventsWithParticipation,
+        (eventWithParticipation) async {
+      Event event = eventWithParticipation['event'];
+      bool participated = eventWithParticipation['participated'];
+
+      await fetchEventDetails(event);
+      userEvents.add(UserEvent(event: event, participated: participated));
+    });
+
+    userEventsList.value = userEvents;
   }
 
   Future<void> fetchEventDetails(Event event) async {

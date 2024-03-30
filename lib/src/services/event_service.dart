@@ -4,6 +4,29 @@ import 'package:sportconnect/src/models/event.dart';
 class EventService {
   final String _tableName = 'events';
 
+  Future<List<Map<String, dynamic>>> getUserEvents(String userId) async {
+    final eventsResponse = await supabase
+        .from('event_participants')
+        .select('id_event, assisted')
+        .eq('id_user', userId);
+
+    List<dynamic> eventData = eventsResponse as List<dynamic>;
+    List<Map<String, dynamic>> userEventsWithParticipation = [];
+
+    for (var eventData in eventData) {
+      int eventId = eventData['id_event'] as int;
+      bool participated = eventData['assisted'] as bool;
+      Event event = await getEventById(eventId);
+
+      userEventsWithParticipation.add({
+        'event': event,
+        'participated': participated,
+      });
+    }
+
+    return userEventsWithParticipation;
+  }
+
   Future<Event> getEventById(int eventId) async {
     final eventResponse = await supabase
         .from(_tableName)
