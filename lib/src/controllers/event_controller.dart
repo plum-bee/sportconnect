@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:sportconnect/main.dart'; // Assuming this is where your supabase instance is initialized
+import 'package:sportconnect/main.dart';
 import 'package:sportconnect/src/models/event.dart';
 import 'package:sportconnect/src/services/event_service.dart';
 import 'package:sportconnect/src/services/sport_service.dart';
@@ -55,7 +55,7 @@ class EventController extends GetxController {
     await Future.forEach<Map<String, dynamic>>(userEventsWithParticipation,
         (eventWithParticipation) async {
       Event event = eventWithParticipation['event'];
-      bool participated = eventWithParticipation['participated'];
+      bool participated = eventWithParticipation['assisted'];
 
       await fetchEventDetails(event);
       userEvents.add(UserEvent(event: event, participated: participated));

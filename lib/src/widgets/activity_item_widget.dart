@@ -1,0 +1,119 @@
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:sportconnect/src/models/event.dart';
+import 'package:sportconnect/src/controllers/event_controller.dart';
+
+class ActivityItemWidget extends StatelessWidget {
+  final UserEvent userEvent;
+
+  ActivityItemWidget({Key? key, required this.userEvent}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    Event event = userEvent.event;
+    Widget sportIcon = _getSportIcon(event.sportName ?? 'Unknown');
+    String formattedStartTime = event.startTime != null
+        ? DateFormat('EEE, MMM d, yyyy').format(event.startTime!)
+        : 'Date not set';
+
+    Decoration containerDecoration = BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Colors.white, Colors.grey.shade200],
+      ),
+      borderRadius: BorderRadius.circular(12.0),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.3),
+          spreadRadius: 2,
+          blurRadius: 6,
+          offset: Offset(0, 3),
+        ),
+      ],
+    );
+
+    return Container(
+      margin: EdgeInsets.all(8.0),
+      padding: EdgeInsets.all(16.0),
+      decoration: containerDecoration,
+      child: Row(
+        children: [
+          CircleAvatar(
+            backgroundColor: Colors.grey.shade300,
+            child: sportIcon,
+          ),
+          SizedBox(width: 16.0),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(event.sportName ?? 'Sport Name',
+                    style:
+                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                SizedBox(height: 4.0),
+                Text(formattedStartTime,
+                    style: TextStyle(color: Colors.grey.shade600)),
+                SizedBox(height: 8.0),
+                Row(
+                  children: [
+                    Icon(Icons.location_on, size: 16.0, color: Colors.grey),
+                    SizedBox(width: 4.0),
+                    Expanded(
+                      child: Text(event.locationName ?? 'Location',
+                          style: TextStyle(fontSize: 16.0)),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 4.0),
+                Row(
+                  children: [
+                    Icon(Icons.bar_chart, size: 16.0, color: Colors.grey),
+                    SizedBox(width: 4.0),
+                    Text(event.skillLevelName ?? 'Skill Level',
+                        style: TextStyle(fontSize: 14.0)),
+                  ],
+                ),
+                if (!event.isRegistrationOpen)
+                  Padding(
+                    padding: EdgeInsets.only(top: 8.0),
+                    child: Text("Registration Closed",
+                        style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 12.0,
+                            fontStyle: FontStyle.italic)),
+                  ),
+                Padding(
+                  padding: EdgeInsets.only(top: 8.0),
+                  child: Text(
+                    userEvent.participated
+                        ? "Participated"
+                        : "Not Participated",
+                    style: TextStyle(
+                        color:
+                            userEvent.participated ? Colors.green : Colors.grey,
+                        fontSize: 12.0,
+                        fontStyle: FontStyle.italic),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _getSportIcon(String sportName) {
+    switch (sportName.toLowerCase()) {
+      case 'basketball':
+        return Icon(Icons.sports_basketball, color: Colors.orange);
+      case 'football':
+        return Icon(Icons.sports_football, color: Colors.brown);
+      case 'soccer':
+        return Icon(Icons.sports_soccer, color: Colors.green);
+      default:
+        return Icon(Icons.sports, color: Colors.blue);
+    }
+  }
+}

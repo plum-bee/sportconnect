@@ -13,14 +13,14 @@ class EventService {
     List<dynamic> eventData = eventsResponse as List<dynamic>;
     List<Map<String, dynamic>> userEventsWithParticipation = [];
 
-    for (var eventData in eventData) {
-      int eventId = eventData['id_event'] as int;
-      bool participated = eventData['assisted'] as bool;
+    for (var data in eventData) {
+      int eventId = data['id_event'] as int;
+      bool participated = data['assisted'] as bool;
       Event event = await getEventById(eventId);
 
       userEventsWithParticipation.add({
         'event': event,
-        'participated': participated,
+        'assisted': participated,
       });
     }
 
