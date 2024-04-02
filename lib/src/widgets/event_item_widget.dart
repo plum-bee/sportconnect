@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sportconnect/src/models/event.dart';
+import 'package:sportconnect/src/utils/sport_icon_getter.dart';
 
 class EventItemWidget extends StatelessWidget {
   final Event event;
@@ -9,7 +10,8 @@ class EventItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget sportIcon = _getSportIcon(event.sportName ?? 'Unknown');
+    Widget sportIcon =
+        SportIconGetter.getSportIcon(event.sportName ?? 'Unknown');
     String formattedStartTime = event.startTime != null
         ? DateFormat('EEE, MMM d, yyyy').format(event.startTime!)
         : 'Date not set';
@@ -87,18 +89,5 @@ class EventItemWidget extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Widget _getSportIcon(String sportName) {
-    switch (sportName.toLowerCase()) {
-      case 'basketball':
-        return Icon(Icons.sports_basketball, color: Colors.orange);
-      case 'football':
-        return Icon(Icons.sports_football, color: Colors.brown);
-      case 'soccer':
-        return Icon(Icons.sports_soccer, color: Colors.green);
-      default:
-        return Icon(Icons.sports, color: Colors.blue);
-    }
   }
 }

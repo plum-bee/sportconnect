@@ -5,6 +5,7 @@ import 'package:sportconnect/src/models/member.dart';
 import 'package:sportconnect/src/widgets/avatar_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:sportconnect/main.dart';
+import 'package:sportconnect/src/utils/sport_icon_getter.dart';
 
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({Key? key}) : super(key: key);
@@ -38,21 +39,6 @@ class ProfileScreen extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  IconData _getSportIcon(String sportName) {
-    switch (sportName.toLowerCase()) {
-      case 'football':
-        return Icons.sports_soccer;
-      case 'basketball':
-        return Icons.sports_basketball;
-      case 'paddle':
-        return Icons.sports_tennis;
-      case 'table tennis':
-        return Icons.sports_baseball;
-      default:
-        return Icons.sports;
-    }
   }
 
   @override
@@ -97,10 +83,7 @@ class ProfileScreen extends StatelessWidget {
                           .format(currentUser.createdAt ?? DateTime.now()),
                       Icons.calendar_today),
                   ...currentUser.userSportsSkills.map((skill) => ListTile(
-                        leading: Icon(
-                          _getSportIcon(skill.sport.name),
-                          color: Colors.deepOrange,
-                        ),
+                        leading: SportIconGetter.getSportIcon(skill.sport.name),
                         title: Text(skill.sport.name),
                         subtitle: Text('Skill Level: ${skill.skillLevel.name}'),
                       )),
