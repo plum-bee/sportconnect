@@ -1,46 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sportconnect/src/controllers/member_controller.dart';
+import 'package:sportconnect/src/widgets/event_item_widget.dart'; // Update this import based on your file structure
+import 'package:sportconnect/src/controllers/event_controller.dart'; // Update this import based on your file structure
 
 class TestScreen extends StatelessWidget {
   TestScreen({Key? key}) : super(key: key);
 
-  final MemberController memberController = Get.put(MemberController());
+  final EventController eventController = Get.put(EventController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Test Screen'),
-      ),
-      body: Obx(() {
-        if (memberController.currentUser.value == null) {
-          return Center(child: CircularProgressIndicator());
-        } else {
-          final member = memberController.currentUser.value!;
-          return ListView(
-            children: [
-              ListTile(
-                title: Text('Name'),
-                subtitle: Text('${member.name} ${member.surname}'),
-              ),
-              ListTile(
-                title: Text('Email'),
-                subtitle: Text(member.email),
-              ),
-              ListTile(
-                title: Text('Sports and Skill Levels'),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: member.userSportsSkills
-                      .map((e) => Text('${e.sport.name}: ${e.skillLevel.name}'))
-                      .toList(),
-                ),
-              ),
-            ],
-          );
-        }
-      }),
-    );
+        appBar: AppBar(
+          title: Text('Events List'),
+        ),
+        body: Obx(() {
+          if (eventController.eventsList.value.isEmpty) {
+            return Center(child: CircularProgressIndicator());
+          } else {
+            return ListView.builder(
+              itemCount: eventController.eventsList.value.length,
+              itemBuilder: (context, index) {
+                final event = eventController.eventsList.value[index];
+                return EventItemWidget(event: event);
+              },
+            );
+          }
+        }));
   }
 }

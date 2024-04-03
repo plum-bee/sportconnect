@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
           password: password.trim(),
         );
         if (mounted) {
-          Navigator.of(context).pushReplacementNamed('/profile');
+          Navigator.of(context).pushReplacementNamed('/main');
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Sign in successful!')),
           );

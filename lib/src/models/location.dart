@@ -1,5 +1,5 @@
 class Location {
-  final String idLocation;
+  final int? idLocation;
   final String name;
   final String address;
   final String contact;
@@ -31,5 +31,15 @@ class Location {
       'contact': contact,
       'coordinates': coordinates,
     };
+  }
+
+  static Location fromMap(Map<String, dynamic> map) {
+    return Location(
+      idLocation: map['id_location'],
+      name: map['name'],
+      address: map['address'],
+      contact: map['contact'],
+      coordinates: map['coordinates'],
+    );
   }
 }
