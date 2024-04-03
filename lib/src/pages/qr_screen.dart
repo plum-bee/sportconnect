@@ -17,9 +17,22 @@ class _QRScreenState extends State<QRScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('QR Flutter'),
+        title: Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: screenSize.width * 0.5,
+              maxHeight: screenSize.height * 0.05,
+            ),
+            child: Image.asset(
+              'assets/images/logo_text.png',
+              fit: BoxFit.fitWidth,
+            ),
+          ),
+        ),
       ),
       body: Center(
         child: Container(

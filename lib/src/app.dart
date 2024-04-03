@@ -5,6 +5,7 @@ import 'package:sportconnect/src/pages/register_screen.dart';
 import 'package:sportconnect/src/pages/search_screen.dart';
 import 'package:sportconnect/src/pages/profile_screen.dart';
 import 'package:sportconnect/src/pages/qr_screen.dart';
+import 'package:sportconnect/src/pages/skill_level_screen.dart';
 //import 'package:sportconnect/src/pages/test_screen.dart';
 
 class SportConnectApp extends StatelessWidget {
@@ -28,7 +29,7 @@ class SportConnectApp extends StatelessWidget {
           ),
         ),
       ),
-      initialRoute: '/qr',
+      initialRoute: '/skill',
       routes: <String, WidgetBuilder>{
         '/': (_) => const SearchScreen(),
         '/splash': (_) => const SplashScreen(),
@@ -37,6 +38,7 @@ class SportConnectApp extends StatelessWidget {
         '/search': (_) => const SearchScreen(),
         '/profile': (_) => UserProfileScreen(),
         '/qr': (_) => const QRScreen(),
+        '/skill': (_) => const SkillLevelScreen(),
       },
     );
   }
