@@ -76,7 +76,7 @@ class _QRScreenState extends State<QRScreen> {
   void _onQRViewCreated(QRViewController controller) {
     controller.scannedDataStream.listen((scanData) {
       setState(() {
-        qrData = scanData.code;
+        qrData = scanData.code!;
       });
     });
   }
