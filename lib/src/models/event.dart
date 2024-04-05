@@ -1,3 +1,5 @@
+import 'package:sportconnect/src/models/member.dart';
+
 class Event {
   final int idEvent;
   final int? idLocation;
@@ -9,6 +11,7 @@ class Event {
   String? sportName;
   String? skillLevelName;
   String? locationName;
+  List<Member>? participants;
 
   Event({
     required this.idEvent,
