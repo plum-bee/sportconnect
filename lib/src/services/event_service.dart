@@ -1,5 +1,7 @@
 import 'package:sportconnect/main.dart';
 import 'package:sportconnect/src/models/event.dart';
+import 'package:sportconnect/src/models/member.dart';
+import 'package:sportconnect/src/services/member_service.dart';
 
 class EventService {
   final String _tableName = 'events';
@@ -70,5 +72,20 @@ class EventService {
     if (response == null) {
       throw Exception('Failed to delete event: ${response.error!.message}');
     }
+  }
+
+  Future<List<Member>> getEventParticipants(int eventId) async {
+    final participantsResponse = await supabase
+        .from('event_participants')
+        .select('id_user')
+        .eq('id_event', eventId);
+
+    List<Member> participants = [];
+    for (var data in participantsResponse) {
+      String userId = data['id_user'] as String;
+      Member member = await MemberService().getMemberById(userId);
+      participants.add(member);
+    }
+    return participants;
   }
 }

@@ -5,6 +5,7 @@ import 'package:sportconnect/src/services/event_service.dart';
 import 'package:sportconnect/src/services/sport_service.dart';
 import 'package:sportconnect/src/services/location_service.dart';
 import 'package:sportconnect/src/services/skill_level_service.dart';
+import 'package:sportconnect/src/models/member.dart';
 
 class UserEvent {
   final Event event;
@@ -76,7 +77,10 @@ class EventController extends GetxController {
     }
     if (event.idLocation != null) {
       final location = await locationService.getLocationById(event.idLocation!);
-      event.locationName = location.name;
+      event.location = location;
+      List<Member> participants =
+          await eventService.getEventParticipants(event.idEvent);
+      event.participants = participants;
     }
   }
 }

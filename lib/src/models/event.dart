@@ -1,4 +1,5 @@
 import 'package:sportconnect/src/models/member.dart';
+import 'package:sportconnect/src/models/location.dart';
 
 class Event {
   final int idEvent;
@@ -10,7 +11,7 @@ class Event {
 
   String? sportName;
   String? skillLevelName;
-  String? locationName;
+  Location? location;
   List<Member>? participants;
 
   Event({
@@ -22,7 +23,7 @@ class Event {
     this.isRegistrationOpen = false,
     this.sportName,
     this.skillLevelName,
-    this.locationName,
+    this.location,
   });
 
   factory Event.fromMap(Map<String, dynamic> map) {
