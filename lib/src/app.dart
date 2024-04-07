@@ -6,13 +6,14 @@ import 'package:sportconnect/src/pages/search_screen.dart';
 import 'package:sportconnect/src/pages/profile_screen.dart';
 import 'package:sportconnect/src/pages/test_screen.dart';
 import 'package:sportconnect/src/pages/main_screen.dart';
+import 'package:get/get.dart';
 
 class SportConnectApp extends StatelessWidget {
   const SportConnectApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Supabase Flutter',
       theme: ThemeData.dark().copyWith(
         primaryColor: Colors.green,

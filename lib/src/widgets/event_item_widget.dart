@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sportconnect/src/models/event.dart';
 import 'package:sportconnect/src/utils/sport_icon_getter.dart';
+import 'package:get/get.dart'; // Import GetX if you're using it for navigation
+import 'package:sportconnect/src/pages/event_info_screen.dart'; // Import your EventInfoScreen
 
 class EventItemWidget extends StatelessWidget {
   final Event event;
@@ -36,51 +38,54 @@ class EventItemWidget extends StatelessWidget {
       ],
     );
 
-    return Container(
-      margin: EdgeInsets.all(8.0),
-      padding: EdgeInsets.all(16.0),
-      decoration: containerDecoration,
-      child: Row(
-        crossAxisAlignment:
-            CrossAxisAlignment.start, // Align items at the start
-        children: [
-          CircleAvatar(
-            backgroundColor: Colors.grey.shade300,
-            child: sportIcon,
-          ),
-          SizedBox(width: 16.0),
-          Expanded(
-            child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start, // Align text to the start
-              children: [
-                Text(event.sportName ?? 'Sport Name',
-                    style:
-                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-                SizedBox(height: 4.0),
-                Text(formattedStartTime,
-                    style: TextStyle(color: Colors.grey.shade600)),
-                SizedBox(height: 8.0),
-                Text(event.location?.name ?? 'Location not set',
-                    style: TextStyle(fontSize: 16.0)),
-                SizedBox(height: 4.0),
-                Text(event.location?.address ?? '',
-                    style:
-                        TextStyle(fontSize: 14.0, color: Colors.grey.shade600)),
-                SizedBox(height: 8.0),
-                Text(event.skillLevelName ?? 'Skill Level',
-                    style: TextStyle(fontSize: 14.0)),
-                SizedBox(height: 8.0),
-                Text(registrationStatus,
-                    style: TextStyle(
-                        fontSize: 14.0,
-                        color: event.isRegistrationOpen
-                            ? Colors.green
-                            : Colors.red)),
-              ],
+    return GestureDetector(
+      onTap: () {
+        Get.to(() => EventInfoScreen(eventId: event.idEvent));
+      },
+      child: Container(
+        margin: EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(16.0),
+        decoration: containerDecoration,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CircleAvatar(
+              backgroundColor: Colors.grey.shade300,
+              child: sportIcon,
             ),
-          ),
-        ],
+            SizedBox(width: 16.0),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(event.sportName ?? 'Sport Name',
+                      style: TextStyle(
+                          fontSize: 20.0, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 4.0),
+                  Text(formattedStartTime,
+                      style: TextStyle(color: Colors.grey.shade600)),
+                  SizedBox(height: 8.0),
+                  Text(event.location?.name ?? 'Location not set',
+                      style: TextStyle(fontSize: 16.0)),
+                  SizedBox(height: 4.0),
+                  Text(event.location?.address ?? '',
+                      style: TextStyle(
+                          fontSize: 14.0, color: Colors.grey.shade600)),
+                  SizedBox(height: 8.0),
+                  Text(event.skillLevelName ?? 'Skill Level',
+                      style: TextStyle(fontSize: 14.0)),
+                  SizedBox(height: 8.0),
+                  Text(registrationStatus,
+                      style: TextStyle(
+                          fontSize: 14.0,
+                          color: event.isRegistrationOpen
+                              ? Colors.green
+                              : Colors.red)),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

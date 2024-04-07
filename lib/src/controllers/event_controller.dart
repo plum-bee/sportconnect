@@ -6,6 +6,7 @@ import 'package:sportconnect/src/services/sport_service.dart';
 import 'package:sportconnect/src/services/location_service.dart';
 import 'package:sportconnect/src/services/skill_level_service.dart';
 import 'package:sportconnect/src/models/member.dart';
+import 'package:sportconnect/src/models/media.dart';
 
 class UserEvent {
   final Event event;
@@ -82,5 +83,8 @@ class EventController extends GetxController {
           await eventService.getEventParticipants(event.idEvent);
       event.participants = participants;
     }
+
+    List<Media> media = await eventService.getEventMedia(event.idEvent);
+    event.media = media;
   }
 }

@@ -2,6 +2,7 @@ import 'package:sportconnect/main.dart';
 import 'package:sportconnect/src/models/event.dart';
 import 'package:sportconnect/src/models/member.dart';
 import 'package:sportconnect/src/services/member_service.dart';
+import 'package:sportconnect/src/models/media.dart';
 
 class EventService {
   final String _tableName = 'events';
@@ -87,5 +88,15 @@ class EventService {
       participants.add(member);
     }
     return participants;
+  }
+
+  Future<List<Media>> getEventMedia(int eventId) async {
+    final mediaResponse =
+        await supabase.from('events_media').select().eq('id_event', eventId);
+    List<Media> media = [];
+    for (var data in mediaResponse) {
+      media.add(Media.fromMap(data));
+    }
+    return media;
   }
 }
