@@ -4,7 +4,7 @@ import 'package:sportconnect/src/widgets/event_item_widget.dart';
 import 'package:sportconnect/src/controllers/event_controller.dart';
 
 class HomeScreen extends StatelessWidget {
-  HomeScreen({Key? key}) : super(key: key);
+  HomeScreen({super.key});
 
   final EventController eventController = Get.put(EventController());
 
@@ -13,7 +13,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       body: Obx(() {
         if (eventController.upcomingEventsList.value.isEmpty) {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         } else {
