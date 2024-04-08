@@ -1,9 +1,13 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
-import 'package:sportconnect/src/models/media.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:media_kit/media_kit.dart';
+import 'package:media_kit_video/media_kit_video.dart';
+import 'package:sportconnect/src/models/media.dart' as sc;
+import 'package:sportconnect/main.dart';
 
 class MediaWidget extends StatefulWidget {
-  final List<Media> mediaList;
+  final List<sc.Media> mediaList;
   final int eventId;
 
   const MediaWidget({Key? key, required this.mediaList, required this.eventId})
@@ -13,38 +17,68 @@ class MediaWidget extends StatefulWidget {
   _MediaWidgetState createState() => _MediaWidgetState();
 }
 
+Future<void> uploadEventMedia(
+    int idEvent, String mediaPath, String mediaType) async {
+  try {
+    final fileExt = mediaPath.split('.').last;
+    final filePath = 'events/${DateTime.now().toIso8601String()}.$fileExt';
+    final fileBytes = await File(mediaPath).readAsBytes();
+
+    await supabase.storage
+        .from('sportconnect')
+        .uploadBinary(filePath, fileBytes);
+
+    final imageUrlResponse = await supabase.storage
+        .from('sportconnect')
+        .createSignedUrl(filePath, 60 * 60 * 24 * 365 * 10);
+
+    final insertResponse = await supabase.from('events_media').insert({
+      'media_path': imageUrlResponse,
+      'media_type': mediaType,
+      'id_event': idEvent,
+    });
+
+    if (insertResponse.error != null) {
+      throw Exception(
+          'Failed to insert media info: ${insertResponse.error?.message}');
+    }
+
+    print('Media uploaded and info inserted successfully');
+  } catch (e) {
+    print('An error occurred: $e');
+  }
+}
+
 class _MediaWidgetState extends State<MediaWidget> {
-  late List<VideoPlayerController> _videoControllers;
-  late Map<int, GlobalKey> _playPauseButtonKeys;
+  late final List<Player> _videoPlayers = [];
+  late final List<VideoController> _videoControllers = [];
+  sc.MediaType? selectedMediaType;
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
     super.initState();
-    _videoControllers = [];
-    _playPauseButtonKeys = {};
-    _initializeVideoPlayers();
+    WidgetsFlutterBinding.ensureInitialized();
+    MediaKit.ensureInitialized();
+    _initializeMedia();
   }
 
-  void _initializeVideoPlayers() {
-    _videoControllers.clear();
-    _playPauseButtonKeys.clear();
-
-    for (int i = 0; i < widget.mediaList.length; i++) {
-      var media = widget.mediaList[i];
-      if (media.type == MediaType.video) {
-        var controller =
-            VideoPlayerController.networkUrl(Uri.parse(media.path));
-
+  void _initializeMedia() {
+    for (var media in widget.mediaList) {
+      if (media.type == sc.MediaType.video) {
+        Player player = Player();
+        VideoController controller = VideoController(player);
+        player.open(Media(media.path));
+        _videoPlayers.add(player);
         _videoControllers.add(controller);
       }
-      _playPauseButtonKeys[i] = GlobalKey();
     }
   }
 
   @override
   void dispose() {
-    for (var controller in _videoControllers) {
-      controller.dispose();
+    for (var player in _videoPlayers) {
+      player.dispose();
     }
     super.dispose();
   }
@@ -52,77 +86,120 @@ class _MediaWidgetState extends State<MediaWidget> {
   @override
   Widget build(BuildContext context) {
     if (widget.mediaList.isEmpty) {
-      return Center(child: Text('No images available.'));
+      return const Center(child: Text('No media available.'));
     }
+
+    List<sc.Media> filteredMediaList = selectedMediaType == null
+        ? widget.mediaList
+        : widget.mediaList
+            .where((media) => media.type == selectedMediaType)
+            .toList();
+
+    int videoIndex = -1;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Align(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.image),
+              onPressed: () =>
+                  setState(() => selectedMediaType = sc.MediaType.image),
+            ),
+            IconButton(
+              icon: const Icon(Icons.videocam),
+              onPressed: () =>
+                  setState(() => selectedMediaType = sc.MediaType.video),
+            ),
+            IconButton(
+              icon: const Icon(Icons.clear),
+              onPressed: () => setState(() => selectedMediaType = null),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ElevatedButton.icon(
+              icon: Icon(Icons.image),
+              label: Text("Upload Image"),
+              onPressed: () =>
+                  _pickMedia('image'), // Changed to string representation
+            ),
+            ElevatedButton.icon(
+              icon: Icon(Icons.video_call),
+              label: Text("Upload Video"),
+              onPressed: () =>
+                  _pickMedia('video'), // Changed to string representation
+            ),
+          ],
+        ),
+        const Align(
           alignment: Alignment.topRight,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text('SportConnect highlights',
-                style: Theme.of(context).textTheme.subtitle1),
+            padding: EdgeInsets.all(8.0),
+            child: Text('SportConnect highlights'),
           ),
         ),
-        Container(
+        SizedBox(
           height: 200,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: widget.mediaList.length,
+            itemCount: filteredMediaList.length,
             itemBuilder: (context, index) {
-              final media = widget.mediaList[index];
-              if (media.type == MediaType.image) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                  child:
-                      Image.network(media.path, fit: BoxFit.cover, height: 200),
-                );
-              } else if (media.type == MediaType.video) {
-                VideoPlayerController controller = _videoControllers[0]
-                  ..initialize().then((_) {
-                    setState(() {});
-                  });
-                if (controller != null && controller.value.isInitialized) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                    child: Stack(
-                      alignment: Alignment.bottomCenter,
-                      children: <Widget>[
-                        AspectRatio(
-                          aspectRatio: controller.value.aspectRatio,
-                          child: VideoPlayer(controller),
-                        ),
-                        FloatingActionButton(
-                          key: _playPauseButtonKeys[
-                              index], // Use index here instead of media.id
-                          onPressed: () {
-                            setState(() {
-                              controller.value.isPlaying
-                                  ? controller.pause()
-                                  : controller.play();
-                            });
-                          },
-                          child: Icon(
-                            controller.value.isPlaying
-                                ? Icons.pause
-                                : Icons.play_arrow,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                } else {
-                  return Center(child: CircularProgressIndicator());
-                }
+              final media = filteredMediaList[index];
+
+              const mediaWidth = 300.0;
+              const mediaHeight = 200.0;
+
+              Widget mediaWidget;
+              if (media.type == sc.MediaType.image) {
+                mediaWidget = Image.network(media.path, fit: BoxFit.cover);
+              } else if (media.type == sc.MediaType.video) {
+                videoIndex++;
+                mediaWidget = Video(controller: _videoControllers[videoIndex]);
               } else {
-                return SizedBox.shrink();
+                mediaWidget = const SizedBox.shrink();
               }
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                child: SizedBox(
+                  width: mediaWidth,
+                  height: mediaHeight,
+                  child: ClipRRect(
+                    child: mediaWidget,
+                  ),
+                ),
+              );
             },
           ),
         ),
       ],
     );
+  }
+
+  Future<void> _pickMedia(String mediaType) async {
+    XFile? pickedFile;
+
+    if (mediaType == 'image') {
+      pickedFile = await _picker.pickImage(
+        source: ImageSource.gallery,
+      );
+    } else if (mediaType == 'video') {
+      pickedFile = await _picker.pickVideo(
+        source: ImageSource.gallery,
+      );
+    }
+
+    if (pickedFile != null) {
+      uploadEventMedia(widget.eventId, pickedFile.path, mediaType);
+      // You might want to refresh or reinitialize media after uploading a new one.
+      // However, be careful with calling _initializeMedia without clearing old data if needed.
+    } else {
+      print('No file selected.');
+    }
   }
 }
