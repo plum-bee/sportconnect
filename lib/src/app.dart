@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sportconnect/src/pages/forgot_password_screen.dart';
+import 'package:sportconnect/src/pages/skill_level_screen.dart';
 import 'package:sportconnect/src/pages/splash_screen.dart';
 import 'package:sportconnect/src/pages/login_screen.dart';
 import 'package:sportconnect/src/pages/register_screen.dart';
@@ -28,15 +30,17 @@ class SportConnectApp extends StatelessWidget {
           ),
         ),
       ),
-      initialRoute: '/splash',
+      initialRoute: '/skill',
       routes: <String, WidgetBuilder>{
         '/': (_) => const SearchScreen(),
         '/splash': (_) => const SplashScreen(),
         '/login': (_) => const LoginScreen(),
-        '/register': (_) => RegisterScreen(),
+        '/register': (_) => const RegisterScreen(),
+        '/forgot': (_) => const ForgotPasswordScreen(),
         '/search': (_) => const SearchScreen(),
         '/profile': (_) => ProfileScreen(),
         '/main': (_) => const MainScreen(),
+        '/skill': (_) => SkillLevelScreen(),
         '/test': (_) => TestScreen(),
       },
     );

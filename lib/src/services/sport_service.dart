@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:sportconnect/main.dart';
 import 'package:sportconnect/src/models/sport.dart';
 
@@ -15,9 +17,9 @@ class SportService {
   }
 
   Future<List<Sport>> getAllSports() async {
-    final sportsResponse = await supabase.from(_tableName).select();
+    final sportsResponse = await supabase.from(_tableName).select().execute();
 
-    final dataList = sportsResponse as List<dynamic>;
+    final dataList = sportsResponse.data as List<dynamic>;
     return dataList.map((sport) => Sport.fromMap(sport)).toList();
   }
 }
