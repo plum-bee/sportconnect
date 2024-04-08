@@ -1,8 +1,7 @@
-// ignore_for_file: avoid_unnecessary_containers
-
 import 'package:flutter/material.dart';
 import 'package:sportconnect/src/models/sport.dart';
 import 'package:sportconnect/src/services/sport_service.dart';
+import 'package:sportconnect/src/pages/login_screen.dart';
 
 class SkillLevelScreen extends StatelessWidget {
   final SportService sportService = SportService();
@@ -18,15 +17,12 @@ class SkillLevelScreen extends StatelessWidget {
             children: [
               const SizedBox(
                 height: 16,
-              ), // Agrega un espacio entre la imagen y el borde superior
+              ),
               Image.asset(
                 'assets/images/logo.png',
-                width: MediaQuery.of(context).size.width *
-                    0.5, // Ajusta el tamaño de la imagen del AppBar según sea necesario
-                height: MediaQuery.of(context).size.height *
-                    0.1, // Ajusta el tamaño de la imagen del AppBar según sea necesario
-                fit: BoxFit
-                    .contain, // Ajusta el tamaño de la imagen de forma que quepa dentro del AppBar
+                width: MediaQuery.of(context).size.width * 0.5,
+                height: MediaQuery.of(context).size.height * 0.1,
+                fit: BoxFit.contain,
               ),
             ],
           ),
@@ -38,7 +34,7 @@ class SkillLevelScreen extends StatelessWidget {
           future: sportService.getAllSports(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator(); // Muestra un indicador de carga mientras se obtienen los datos
+              return const CircularProgressIndicator();
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else {
@@ -50,14 +46,24 @@ class SkillLevelScreen extends StatelessWidget {
                   for (var i = 0; i < sports.length; i++)
                     Column(
                       children: [
-                        _SkillLevelContainer(sports[i].name),
+                        _SkillLevelContainer(sports[i]),
                         if (i < sports.length - 1)
                           const SizedBox(
-                              height:
-                                  50), // Agrega espacio entre los contenedores de cada deporte
+                            height: 50,
+                          ),
                       ],
                     ),
                   const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginScreen()),
+                      );
+                    },
+                    child: const Text('Finish'),
+                  ),
                 ],
               );
             }
@@ -69,16 +75,16 @@ class SkillLevelScreen extends StatelessWidget {
 }
 
 class _SkillLevelContainer extends StatefulWidget {
-  final String sportName;
+  final Sport sport;
 
-  const _SkillLevelContainer(this.sportName);
+  const _SkillLevelContainer(this.sport);
 
   @override
   _SkillLevelContainerState createState() => _SkillLevelContainerState();
 }
 
 class _SkillLevelContainerState extends State<_SkillLevelContainer> {
-  double _value = 0;
+  bool _isChecked = false; // Estado del checkbox
 
   @override
   Widget build(BuildContext context) {
@@ -89,14 +95,23 @@ class _SkillLevelContainerState extends State<_SkillLevelContainer> {
           children: [
             const SizedBox(
               width: 8,
-            ), // Agrega espacio entre la imagen y el texto
+            ),
             Text(
-              'Choose your skill level for ${widget.sportName}:',
+              'Choose your skill level for ${widget.sport.name}:',
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            Checkbox(
+              value: _isChecked,
+              onChanged: (value) {
+                setState(() {
+                  _isChecked = value!;
+                  // Aquí puedes guardar el estado del checkbox en la base de datos
+                });
+              },
             ),
           ],
         ),
-        const SizedBox(height: 12), // Agrega espacio entre el texto y el slider
+        const SizedBox(height: 12),
         _SkillLevelSlider(),
       ],
     );
