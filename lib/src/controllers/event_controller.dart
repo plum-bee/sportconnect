@@ -85,6 +85,10 @@ class EventController extends GetxController {
     }
 
     List<Media> media = await eventService.getEventMedia(event.idEvent);
-    event.media = media;
+    event.media.value = media;
+  }
+
+  Future<void> refreshEventInfo() async {
+    await fetchEvents();
   }
 }

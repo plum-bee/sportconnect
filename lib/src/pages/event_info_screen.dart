@@ -42,8 +42,16 @@ class EventInfoScreen extends StatelessWidget {
                 Text(
                     'Participants: ${event.participants?.length.toString() ?? '0'}',
                     style: Theme.of(context).textTheme.headline6),
-                if (event.media != null && event.media!.isNotEmpty)
-                  MediaWidget(mediaList: event.media!, eventId: event.idEvent),
+                Obx(
+                  () => event.media.isNotEmpty
+                      ? MediaWidget(
+                          mediaList: event.media,
+                          eventId: event.idEvent,
+                          refreshEventInfo: () =>
+                              eventController.refreshEventInfo(),
+                        )
+                      : SizedBox.shrink(),
+                )
               ],
             ),
           ),
