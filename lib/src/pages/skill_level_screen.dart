@@ -14,24 +14,31 @@ class SkillLevelScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Container(
-          child: Column(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center, 
             children: [
-              const SizedBox(
-                height: 16,
-              ), // Agrega un espacio entre la imagen y el borde superior
               Image.asset(
                 'assets/images/logo.png',
                 width: MediaQuery.of(context).size.width *
-                    0.5, // Ajusta el tamaño de la imagen del AppBar según sea necesario
+                    0.1,
                 height: MediaQuery.of(context).size.height *
-                    0.1, // Ajusta el tamaño de la imagen del AppBar según sea necesario
-                fit: BoxFit
-                    .contain, // Ajusta el tamaño de la imagen de forma que quepa dentro del AppBar
+                    0.1,
+                fit: BoxFit.contain,
+              ),
+              const SizedBox(
+                width: 8, // Add space between the image and the title
+              ),
+              Text(
+                'Sport Connect',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),
         ),
-        centerTitle: true,
+        centerTitle: false, // Set centerTitle to false
       ),
       body: Center(
         child: FutureBuilder<List<Sport>>(
@@ -54,7 +61,7 @@ class SkillLevelScreen extends StatelessWidget {
                         if (i < sports.length - 1)
                           const SizedBox(
                               height:
-                                  50), // Agrega espacio entre los contenedores de cada deporte
+                                  10), // Agrega espacio entre los contenedores de cada deporte
                       ],
                     ),
                   const SizedBox(height: 20),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sportconnect/src/pages/home_screen.dart';
 import 'package:sportconnect/src/pages/profile_screen.dart';
 import 'package:sportconnect/src/pages/activity_screen.dart';
+import 'package:sportconnect/src/pages/search_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -15,8 +16,7 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<Widget> _widgetOptions = <Widget>[
     HomeScreen(),
-    const Text('Search',
-        style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
+    SearchScreen(),
     const Text('QR',
         style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
     ActivityScreen(),
