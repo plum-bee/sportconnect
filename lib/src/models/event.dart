@@ -14,8 +14,8 @@ class Event {
   String? sportName;
   String? skillLevelName;
   Location? location;
-  List<Member>? participants;
-  RxList<Media> media = RxList<Media>([]);
+  RxList<Member>? participants = RxList<Member>([]);
+  RxList<Media>? media = RxList<Media>([]);
 
   Event({
     required this.idEvent,

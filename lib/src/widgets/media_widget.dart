@@ -78,95 +78,98 @@ class _MediaWidgetState extends State<MediaWidget> {
           : widget.mediaList
               .where((media) => media.type == selectedMediaType)
               .toList();
-      int videoIndex = -1;
-
-      if (widget.mediaList.isEmpty) {
-        return const Center(child: Text('No media available.'));
-      }
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.image),
-                onPressed: () =>
-                    setState(() => selectedMediaType = sc.MediaType.image),
-              ),
-              IconButton(
-                icon: const Icon(Icons.videocam),
-                onPressed: () =>
-                    setState(() => selectedMediaType = sc.MediaType.video),
-              ),
-              IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: () => setState(() => selectedMediaType = null),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton.icon(
-                icon: Icon(Icons.image),
-                label: Text("Upload Image"),
-                onPressed: () => _pickMedia('image'),
-              ),
-              ElevatedButton.icon(
-                icon: Icon(Icons.video_call),
-                label: Text("Upload Video"),
-                onPressed: () => _pickMedia('video'),
-              ),
-            ],
-          ),
-          const Align(
-            alignment: Alignment.topRight,
-            child: Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text('SportConnect highlights'),
-            ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text('SportConnect Highlights',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           ),
           SizedBox(
             height: 200,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: filteredMediaList.length,
-              itemBuilder: (context, index) {
-                final media = filteredMediaList[index];
-
-                const mediaWidth = 300.0;
-                const mediaHeight = 200.0;
-
-                Widget mediaWidget;
-                if (media.type == sc.MediaType.image) {
-                  mediaWidget = Image.network(media.path, fit: BoxFit.cover);
-                } else if (media.type == sc.MediaType.video &&
-                    videoIndex + 1 < _videoControllers.length) {
-                  videoIndex++;
-                  mediaWidget =
-                      Video(controller: _videoControllers[videoIndex]);
-                } else {
-                  mediaWidget = const SizedBox.shrink();
-                }
-
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                  child: SizedBox(
-                    width: mediaWidth,
-                    height: mediaHeight,
-                    child: ClipRRect(
-                      child: mediaWidget,
-                    ),
-                  ),
-                );
-              },
-            ),
+            child: filteredMediaList.isNotEmpty
+                ? ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: filteredMediaList.length,
+                    itemBuilder: (context, index) {
+                      final media = filteredMediaList[index];
+                      return _buildMediaItem(media);
+                    },
+                  )
+                : const Center(child: Text('No media available.')),
           ),
+          _buildMediaControlButtons(),
         ],
       );
     });
+  }
+
+  Widget _buildMediaControlButtons() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ElevatedButton.icon(
+              icon: Icon(Icons.image),
+              label: Text("Upload Image"),
+              onPressed: () => _pickMedia('image'),
+            ),
+            ElevatedButton.icon(
+              icon: Icon(Icons.video_call),
+              label: Text("Upload Video"),
+              onPressed: () => _pickMedia('video'),
+            ),
+            IconButton(
+              icon: const Icon(Icons.image),
+              onPressed: () =>
+                  setState(() => selectedMediaType = sc.MediaType.image),
+            ),
+            IconButton(
+              icon: const Icon(Icons.videocam),
+              onPressed: () =>
+                  setState(() => selectedMediaType = sc.MediaType.video),
+            ),
+            IconButton(
+              icon: const Icon(Icons.clear),
+              onPressed: () => setState(() => selectedMediaType = null),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMediaItem(sc.Media media) {
+    const mediaWidth = 300.0;
+    const mediaHeight = 200.0;
+    Widget mediaWidget;
+
+    if (media.type == sc.MediaType.image) {
+      mediaWidget = Image.network(media.path, fit: BoxFit.cover);
+    } else if (media.type == sc.MediaType.video) {
+      mediaWidget = Video(
+          controller: _videoControllers.isNotEmpty
+              ? _videoControllers[0]
+              : VideoController(Player()));
+    } else {
+      mediaWidget = const SizedBox.shrink();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+      child: SizedBox(
+        width: mediaWidth,
+        height: mediaHeight,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8.0),
+          child: mediaWidget,
+        ),
+      ),
+    );
   }
 
   Future<void> _pickMedia(String mediaType) async {

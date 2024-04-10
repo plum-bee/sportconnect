@@ -3,6 +3,7 @@ import 'package:sportconnect/src/models/event.dart';
 import 'package:sportconnect/src/models/member.dart';
 import 'package:sportconnect/src/services/member_service.dart';
 import 'package:sportconnect/src/models/media.dart';
+import 'package:get/get.dart';
 
 class EventService {
   final String _tableName = 'events';
@@ -75,18 +76,19 @@ class EventService {
     }
   }
 
-  Future<List<Member>> getEventParticipants(int eventId) async {
+  Future<RxList<Member>> getEventParticipants(int eventId) async {
     final participantsResponse = await supabase
         .from('event_participants')
         .select('id_user')
         .eq('id_event', eventId);
 
-    List<Member> participants = [];
+    RxList<Member> participants = RxList<Member>();
     for (var data in participantsResponse) {
-      String userId = data['id_user'] as String;
+      String userId = data['id_user'];
       Member member = await MemberService().getMemberById(userId);
       participants.add(member);
     }
+
     return participants;
   }
 

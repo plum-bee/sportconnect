@@ -79,13 +79,13 @@ class EventController extends GetxController {
     if (event.idLocation != null) {
       final location = await locationService.getLocationById(event.idLocation!);
       event.location = location;
-      List<Member> participants =
+      RxList<Member> participants =
           await eventService.getEventParticipants(event.idEvent);
       event.participants = participants;
     }
 
     List<Media> media = await eventService.getEventMedia(event.idEvent);
-    event.media.value = media;
+    event.media?.value = media;
   }
 
   Future<void> refreshEventInfo() async {
