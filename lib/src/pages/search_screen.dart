@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-// import 'package:mapbox_gl/mapbox_gl.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -79,40 +80,23 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
               const SizedBox(height: 20.0),
               Container(
-                height: screenSize.height * 0.7,
-                child: Image.asset('assets/images/mock_map.png'),
-              ),
+                  height: screenSize.height * 0.7,
+                  // Reemplaza la imagen estática por un mapa interactivo
+                  child: FlutterMap(
+                    options: const MapOptions(
+                      initialCenter: LatLng(40.416775,-3.703790), 
+                      initialZoom: 13.0,
+                    ),
+                    children: [
+                      TileLayer(
+                          urlTemplate:
+                              "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                        ),
+                      // Aquí puedes añadir más capas como MarkerLayerWidget si necesitas
+                    ],
+                  )),
             ],
           ),
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.home),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Icons.mail),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Icons.person),
-              onPressed: () {
-                Navigator.of(context).pushReplacementNamed('/profile');
-              },
-            ),
-          ],
         ),
       ),
     );

@@ -17,6 +17,8 @@ dependencies:
   intl: ^0.18.1
   image_picker: ^1.0.5
   qr_code_scanner: ^1.0.1
+  flutter_map: ^6.1.0
+  latlong2: ^0.9.1
   qr_flutter: ^4.1.0
 
 dev_dependencies:
