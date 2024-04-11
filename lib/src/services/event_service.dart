@@ -101,4 +101,21 @@ class EventService {
     }
     return media;
   }
+
+  Future<void> addParticipantToEvent(int eventId, String userId) async {
+    final participantData = {
+      'id_event': eventId,
+      'id_user': userId,
+    };
+
+    await supabase.from('event_participants').insert(participantData);
+  }
+
+  Future<void> removeParticipantFromEvent(int eventId, String userId) async {
+    await supabase
+        .from('event_participants')
+        .delete()
+        .eq('id_event', eventId)
+        .eq('id_user', userId);
+  }
 }

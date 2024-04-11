@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:sportconnect/main.dart';
 import 'package:sportconnect/src/models/event.dart';
 import 'package:sportconnect/src/services/event_service.dart';
+import 'package:sportconnect/src/services/member_service.dart';
 import 'package:sportconnect/src/services/sport_service.dart';
 import 'package:sportconnect/src/services/location_service.dart';
 import 'package:sportconnect/src/services/skill_level_service.dart';
@@ -24,6 +25,8 @@ class EventController extends GetxController {
   final Rx<List<Event>> eventsList = Rx<List<Event>>([]);
   final Rx<List<UserEvent>> userEventsList = Rx<List<UserEvent>>([]);
   final Rx<List<Event>> upcomingEventsList = Rx<List<Event>>([]);
+
+  final RxBool isCurrentUserParticipating = false.obs;
 
   @override
   void onInit() {
@@ -86,9 +89,68 @@ class EventController extends GetxController {
 
     List<Media> media = await eventService.getEventMedia(event.idEvent);
     event.media?.value = media;
+
+    initializeParticipationStatus(event.idEvent);
   }
 
   Future<void> refreshEventInfo() async {
     await fetchEvents();
+  }
+
+  Future<bool> isCurrentUserParticipant(Event event) async {
+    if (event.participants == null || event.participants!.isEmpty) {
+      RxList<Member> participants =
+          await eventService.getEventParticipants(event.idEvent);
+      event.participants = participants;
+    }
+
+    String currentUserId = supabase.auth.currentUser!.id;
+
+    return event.participants!.any((member) => member.id == currentUserId);
+  }
+
+  Future<void> joinEvent(int eventId) async {
+    String userId = supabase.auth.currentUser!.id;
+    try {
+      await eventService.addParticipantToEvent(eventId, userId);
+
+      var eventIndex =
+          eventsList.value.indexWhere((event) => event.idEvent == eventId);
+      if (eventIndex != -1) {
+        Member newParticipant = await MemberService().getMemberById(userId);
+        eventsList.value[eventIndex].participants?.add(newParticipant);
+        eventsList.refresh();
+      }
+      isCurrentUserParticipating.value = true;
+    } catch (e) {
+      print("Error joining event: $e");
+    }
+  }
+
+  Future<void> leaveEvent(int eventId) async {
+    String userId = supabase.auth.currentUser!.id;
+    try {
+      await eventService.removeParticipantFromEvent(eventId, userId);
+
+      var eventIndex =
+          eventsList.value.indexWhere((event) => event.idEvent == eventId);
+      if (eventIndex != -1) {
+        eventsList.value[eventIndex].participants
+            ?.removeWhere((member) => member.id == userId);
+        eventsList.refresh();
+      }
+      isCurrentUserParticipating.value = false;
+    } catch (e) {
+      print("Error leaving event: $e");
+    }
+  }
+
+  void initializeParticipationStatus(int eventId) async {
+    Event? event =
+        eventsList.value.firstWhereOrNull((e) => e.idEvent == eventId);
+    if (event != null) {
+      bool isParticipant = await isCurrentUserParticipant(event);
+      isCurrentUserParticipating.value = isParticipant;
+    }
   }
 }

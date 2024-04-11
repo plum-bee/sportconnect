@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 import 'package:sportconnect/src/controllers/event_controller.dart';
 import 'package:sportconnect/src/models/event.dart';
 import 'package:sportconnect/src/widgets/media_widget.dart';
-import 'package:intl/intl.dart';
 import 'package:sportconnect/src/utils/sport_icon_getter.dart';
 
 class EventInfoScreen extends StatelessWidget {
@@ -29,6 +29,7 @@ class EventInfoScreen extends StatelessWidget {
           Event? event = eventController.eventsList.value
               .firstWhereOrNull((e) => e.idEvent == eventId);
           if (event != null) {
+            eventController.initializeParticipationStatus(eventId);
             return Text(
                 '${event.location?.name ?? 'Location'} - ${event.sportName ?? 'Sport'}',
                 style: TextStyle(color: accentColor));
@@ -36,6 +37,25 @@ class EventInfoScreen extends StatelessWidget {
           return const Text('Event Details',
               style: TextStyle(color: Colors.white));
         }),
+        actions: <Widget>[
+          Obx(() {
+            bool isParticipant =
+                eventController.isCurrentUserParticipating.value;
+            return TextButton(
+              onPressed: () async {
+                if (isParticipant) {
+                  await eventController.leaveEvent(eventId);
+                } else {
+                  await eventController.joinEvent(eventId);
+                }
+              },
+              child: Text(
+                isParticipant ? 'Leave' : 'Join',
+                style: TextStyle(color: Colors.white),
+              ),
+            );
+          }),
+        ],
       ),
       body: Obx(() {
         Event? event = eventController.eventsList.value
@@ -103,7 +123,7 @@ class EventInfoScreen extends StatelessWidget {
       'Skill Level': event.skillLevelName ?? 'N/A',
       'Location': event.location?.name ?? 'N/A',
       'Start Time': event.startTime != null
-          ? DateFormat('yyyy-MM-dd – kk:mm').format(event.startTime!.toLocal())
+          ? DateFormat('yyyy-MM-dd - kk:mm').format(event.startTime!.toLocal())
           : 'N/A',
       'Registration Open': event.isRegistrationOpen ? 'Yes' : 'No',
     };
