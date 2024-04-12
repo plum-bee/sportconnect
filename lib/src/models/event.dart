@@ -1,3 +1,8 @@
+import 'package:sportconnect/src/models/member.dart';
+import 'package:sportconnect/src/models/location.dart';
+import 'package:sportconnect/src/models/media.dart';
+import 'package:get/get.dart';
+
 class Event {
   final int idEvent;
   final int? idLocation;
@@ -8,7 +13,9 @@ class Event {
 
   String? sportName;
   String? skillLevelName;
-  String? locationName;
+  Location? location;
+  RxList<Member>? participants = RxList<Member>([]);
+  RxList<Media>? media = RxList<Media>([]);
 
   Event({
     required this.idEvent,
@@ -19,7 +26,7 @@ class Event {
     this.isRegistrationOpen = false,
     this.sportName,
     this.skillLevelName,
-    this.locationName,
+    this.location,
   });
 
   factory Event.fromMap(Map<String, dynamic> map) {

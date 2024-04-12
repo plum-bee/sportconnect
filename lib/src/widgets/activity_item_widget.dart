@@ -17,6 +17,10 @@ class ActivityItemWidget extends StatelessWidget {
     String formattedStartTime = event.startTime != null
         ? DateFormat('EEE, MMM d, yyyy').format(event.startTime!)
         : 'Date not set';
+    String registrationStatus =
+        event.isRegistrationOpen ? "Registration Open" : "Registration Closed";
+    String participationStatus =
+        userEvent.participated ? "Participated" : "Not Participated";
 
     Decoration containerDecoration = BoxDecoration(
       gradient: LinearGradient(
@@ -40,6 +44,8 @@ class ActivityItemWidget extends StatelessWidget {
       padding: EdgeInsets.all(16.0),
       decoration: containerDecoration,
       child: Row(
+        crossAxisAlignment:
+            CrossAxisAlignment.start, // Align items to the start
         children: [
           CircleAvatar(
             backgroundColor: Colors.grey.shade300,
@@ -48,7 +54,8 @@ class ActivityItemWidget extends StatelessWidget {
           SizedBox(width: 16.0),
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment:
+                  CrossAxisAlignment.start, // Align text to the start
               children: [
                 Text(event.sportName ?? 'Sport Name',
                     style:
@@ -57,46 +64,31 @@ class ActivityItemWidget extends StatelessWidget {
                 Text(formattedStartTime,
                     style: TextStyle(color: Colors.grey.shade600)),
                 SizedBox(height: 8.0),
-                Row(
-                  children: [
-                    Icon(Icons.location_on, size: 16.0, color: Colors.grey),
-                    SizedBox(width: 4.0),
-                    Expanded(
-                      child: Text(event.locationName ?? 'Location',
-                          style: TextStyle(fontSize: 16.0)),
-                    ),
-                  ],
-                ),
+                Text(event.location?.name ?? 'Location not set',
+                    style: TextStyle(fontSize: 16.0)),
                 SizedBox(height: 4.0),
-                Row(
-                  children: [
-                    Icon(Icons.bar_chart, size: 16.0, color: Colors.grey),
-                    SizedBox(width: 4.0),
-                    Text(event.skillLevelName ?? 'Skill Level',
-                        style: TextStyle(fontSize: 14.0)),
-                  ],
-                ),
-                if (!event.isRegistrationOpen)
-                  Padding(
-                    padding: EdgeInsets.only(top: 8.0),
-                    child: Text("Registration Closed",
-                        style: TextStyle(
-                            color: Colors.red,
-                            fontSize: 12.0,
-                            fontStyle: FontStyle.italic)),
-                  ),
+                Text(event.location?.address ?? '',
+                    style:
+                        TextStyle(fontSize: 14.0, color: Colors.grey.shade600)),
+                SizedBox(height: 8.0),
+                Text(event.skillLevelName ?? 'Skill Level',
+                    style: TextStyle(fontSize: 14.0)),
+                SizedBox(height: 8.0),
+                Text(registrationStatus,
+                    style: TextStyle(
+                        fontSize: 14.0,
+                        color: event.isRegistrationOpen
+                            ? Colors.green
+                            : Colors.red)),
                 Padding(
                   padding: EdgeInsets.only(top: 8.0),
-                  child: Text(
-                    userEvent.participated
-                        ? "Participated"
-                        : "Not Participated",
-                    style: TextStyle(
-                        color:
-                            userEvent.participated ? Colors.green : Colors.grey,
-                        fontSize: 12.0,
-                        fontStyle: FontStyle.italic),
-                  ),
+                  child: Text(participationStatus,
+                      style: TextStyle(
+                          color: userEvent.participated
+                              ? Colors.green
+                              : Colors.red,
+                          fontSize: 12.0,
+                          fontStyle: FontStyle.italic)),
                 ),
               ],
             ),

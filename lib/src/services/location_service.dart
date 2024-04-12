@@ -1,5 +1,6 @@
 import 'package:sportconnect/main.dart';
 import 'package:sportconnect/src/models/location.dart';
+import 'package:sportconnect/src/models/media.dart';
 
 class LocationService {
   final String _tableName = 'locations';
@@ -20,5 +21,25 @@ class LocationService {
     return List<Location>.from(
       locationsResponse.map((e) => Location.fromJson(e)),
     );
+  }
+
+  Future<List<Media>> getLocationMedia(int locationId) async {
+    final mediaResponse = await supabase
+        .from('locations_media')
+        .select()
+        .eq('id_location', locationId);
+
+    List<Media> mediaList = List<Media>.from(
+      mediaResponse.map(
+        (mediaData) => Media(
+          path: mediaData['media_path'],
+          type: mediaData['media_type'] == 'video'
+              ? MediaType.video
+              : MediaType.image,
+        ),
+      ),
+    );
+
+    return mediaList;
   }
 }

@@ -1,5 +1,9 @@
 import 'package:sportconnect/main.dart';
 import 'package:sportconnect/src/models/event.dart';
+import 'package:sportconnect/src/models/member.dart';
+import 'package:sportconnect/src/services/member_service.dart';
+import 'package:sportconnect/src/models/media.dart';
+import 'package:get/get.dart';
 
 class EventService {
   final String _tableName = 'events';
@@ -70,5 +74,48 @@ class EventService {
     if (response == null) {
       throw Exception('Failed to delete event: ${response.error!.message}');
     }
+  }
+
+  Future<RxList<Member>> getEventParticipants(int eventId) async {
+    final participantsResponse = await supabase
+        .from('event_participants')
+        .select('id_user')
+        .eq('id_event', eventId);
+
+    RxList<Member> participants = RxList<Member>();
+    for (var data in participantsResponse) {
+      String userId = data['id_user'];
+      Member member = await MemberService().getMemberById(userId);
+      participants.add(member);
+    }
+
+    return participants;
+  }
+
+  Future<List<Media>> getEventMedia(int eventId) async {
+    final mediaResponse =
+        await supabase.from('events_media').select().eq('id_event', eventId);
+    List<Media> media = [];
+    for (var data in mediaResponse) {
+      media.add(Media.fromMap(data));
+    }
+    return media;
+  }
+
+  Future<void> addParticipantToEvent(int eventId, String userId) async {
+    final participantData = {
+      'id_event': eventId,
+      'id_user': userId,
+    };
+
+    await supabase.from('event_participants').insert(participantData);
+  }
+
+  Future<void> removeParticipantFromEvent(int eventId, String userId) async {
+    await supabase
+        .from('event_participants')
+        .delete()
+        .eq('id_event', eventId)
+        .eq('id_user', userId);
   }
 }

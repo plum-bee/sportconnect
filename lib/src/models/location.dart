@@ -1,3 +1,5 @@
+import 'package:sportconnect/src/models/media.dart';
+
 class Location {
   final int? idLocation;
   final String name;
@@ -5,12 +7,15 @@ class Location {
   final String contact;
   final String coordinates;
 
+  final List<Media>? media;
+
   Location({
     required this.idLocation,
     required this.name,
     required this.address,
     required this.contact,
     required this.coordinates,
+    this.media,
   });
 
   factory Location.fromJson(Map<String, dynamic> json) {
