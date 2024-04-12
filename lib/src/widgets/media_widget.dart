@@ -13,17 +13,17 @@ class MediaWidget extends StatefulWidget {
   final void Function() refreshEventInfo;
 
   const MediaWidget({
-    Key? key,
+    super.key,
     required this.mediaList,
     required this.eventId,
     required this.refreshEventInfo,
-  }) : super(key: key);
+  });
 
   @override
-  _MediaWidgetState createState() => _MediaWidgetState();
+  MediaWidgetState createState() => MediaWidgetState();
 }
 
-class _MediaWidgetState extends State<MediaWidget> {
+class MediaWidgetState extends State<MediaWidget> {
   late final List<Player> _videoPlayers = [];
   late final List<VideoController> _videoControllers = [];
   sc.MediaType? selectedMediaType;
@@ -51,7 +51,7 @@ class _MediaWidgetState extends State<MediaWidget> {
       if (media.type == sc.MediaType.video) {
         Player player = Player();
         VideoController controller = VideoController(player);
-        player.open(Media(media.path));
+        player.open(Media(media.path), play: false);
         _videoPlayers.add(player);
         _videoControllers.add(controller);
       }
@@ -82,8 +82,8 @@ class _MediaWidgetState extends State<MediaWidget> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
             child: Text('SportConnect Highlights',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           ),
@@ -95,7 +95,10 @@ class _MediaWidgetState extends State<MediaWidget> {
                     itemCount: filteredMediaList.length,
                     itemBuilder: (context, index) {
                       final media = filteredMediaList[index];
-                      return _buildMediaItem(media);
+                      return GestureDetector(
+                        onTap: () => _viewMedia(media),
+                        child: _buildMediaItem(media),
+                      );
                     },
                   )
                 : const Center(child: Text('No media available.')),
@@ -106,55 +109,81 @@ class _MediaWidgetState extends State<MediaWidget> {
     });
   }
 
+  void _viewMedia(sc.Media media) {
+    showDialog(
+      context: context,
+      builder: (_) => Dialog(
+        child: media.type == sc.MediaType.image
+            ? Image.network(media.path)
+            : Video(controller: _videoControllers.first),
+      ),
+    );
+  }
+
   Widget _buildMediaControlButtons() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            ElevatedButton.icon(
-              icon: Icon(Icons.image),
-              label: Text("Upload Image"),
-              onPressed: () => _pickMedia('image'),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Wrap(
+        alignment: WrapAlignment.spaceEvenly,
+        spacing: 4.0,
+        runSpacing: 4.0,
+        children: [
+          ElevatedButton.icon(
+            icon: const Icon(Icons.image, size: 16),
+            label: const Text("Upload Image", style: TextStyle(fontSize: 12)),
+            onPressed: () => _pickMedia('image'),
+            style: ElevatedButton.styleFrom(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+              textStyle: const TextStyle(letterSpacing: 0.5),
             ),
-            ElevatedButton.icon(
-              icon: Icon(Icons.video_call),
-              label: Text("Upload Video"),
-              onPressed: () => _pickMedia('video'),
+          ),
+          ElevatedButton.icon(
+            icon: const Icon(Icons.video_call, size: 16),
+            label: const Text("Upload Video", style: TextStyle(fontSize: 12)),
+            onPressed: () => _pickMedia('video'),
+            style: ElevatedButton.styleFrom(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+              textStyle: const TextStyle(letterSpacing: 0.5),
             ),
-            IconButton(
-              icon: const Icon(Icons.image),
-              onPressed: () =>
-                  setState(() => selectedMediaType = sc.MediaType.image),
-            ),
-            IconButton(
-              icon: const Icon(Icons.videocam),
-              onPressed: () =>
-                  setState(() => selectedMediaType = sc.MediaType.video),
-            ),
-            IconButton(
-              icon: const Icon(Icons.clear),
-              onPressed: () => setState(() => selectedMediaType = null),
-            ),
-          ],
-        ),
-      ],
+          ),
+          IconButton(
+            icon: const Icon(Icons.image, size: 20),
+            onPressed: () =>
+                setState(() => selectedMediaType = sc.MediaType.image),
+            padding: const EdgeInsets.all(4.0),
+          ),
+          IconButton(
+            icon: const Icon(Icons.videocam, size: 20),
+            onPressed: () =>
+                setState(() => selectedMediaType = sc.MediaType.video),
+            padding: const EdgeInsets.all(4.0),
+          ),
+          IconButton(
+            icon: const Icon(Icons.clear, size: 20),
+            onPressed: () => setState(() => selectedMediaType = null),
+            padding: const EdgeInsets.all(4.0),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildMediaItem(sc.Media media) {
-    const mediaWidth = 300.0;
-    const mediaHeight = 200.0;
+    const mediaWidth = 320.0;
+    const mediaHeight = 180.0;
+
     Widget mediaWidget;
 
     if (media.type == sc.MediaType.image) {
       mediaWidget = Image.network(media.path, fit: BoxFit.cover);
     } else if (media.type == sc.MediaType.video) {
       mediaWidget = Video(
-          controller: _videoControllers.isNotEmpty
-              ? _videoControllers[0]
-              : VideoController(Player()));
+        controller: _videoControllers.isNotEmpty
+            ? _videoControllers[0]
+            : VideoController(Player()),
+      );
     } else {
       mediaWidget = const SizedBox.shrink();
     }
@@ -165,7 +194,6 @@ class _MediaWidgetState extends State<MediaWidget> {
         width: mediaWidth,
         height: mediaHeight,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(8.0),
           child: mediaWidget,
         ),
       ),

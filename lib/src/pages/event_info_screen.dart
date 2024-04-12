@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'package:sportconnect/main.dart';
 import 'package:sportconnect/src/controllers/event_controller.dart';
 import 'package:sportconnect/src/models/event.dart';
 import 'package:sportconnect/src/widgets/media_widget.dart';
@@ -8,19 +9,26 @@ import 'package:sportconnect/src/utils/sport_icon_getter.dart';
 
 class EventInfoScreen extends StatelessWidget {
   final int eventId;
-  EventInfoScreen({Key? key, required this.eventId}) : super(key: key);
+  final String currentUserId = supabase.auth.currentSession!.user.id;
+  EventInfoScreen({super.key, required this.eventId});
 
   @override
   Widget build(BuildContext context) {
     final EventController eventController = Get.find<EventController>();
 
-    const Color primaryColor = Color(0xFF0A0E21);
-    const Color secondaryColor = Color(0xFF1D1E33);
-    const Color accentColor = Color(0xFFEB1555);
+    const Color primaryColor = Color(0xFF145D55);
+    //const Color secondaryColor = Color(0xFF2CC27F);
+    const Color accentColor = Color(0xFF9FBEB9);
 
-    TextStyle titleStyle = TextStyle(
-        fontSize: 20, fontWeight: FontWeight.bold, color: accentColor);
-    TextStyle subtitleStyle = TextStyle(fontSize: 16, color: Colors.white);
+    TextStyle titleStyle = const TextStyle(
+        fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1AC077));
+    TextStyle subtitleStyle =
+        const TextStyle(fontSize: 16, color: Colors.white);
+    TextStyle buttonTextStyle = const TextStyle(
+      color: Colors.white,
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -32,7 +40,7 @@ class EventInfoScreen extends StatelessWidget {
             eventController.initializeParticipationStatus(eventId);
             return Text(
                 '${event.location?.name ?? 'Location'} - ${event.sportName ?? 'Sport'}',
-                style: TextStyle(color: accentColor));
+                style: const TextStyle(color: accentColor));
           }
           return const Text('Event Details',
               style: TextStyle(color: Colors.white));
@@ -41,17 +49,52 @@ class EventInfoScreen extends StatelessWidget {
           Obx(() {
             bool isParticipant =
                 eventController.isCurrentUserParticipating.value;
-            return TextButton(
-              onPressed: () async {
-                if (isParticipant) {
-                  await eventController.leaveEvent(eventId);
-                } else {
-                  await eventController.joinEvent(eventId);
-                }
-              },
-              child: Text(
-                isParticipant ? 'Leave' : 'Join',
-                style: TextStyle(color: Colors.white),
+            return Padding(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                width: 100,
+                height: 40,
+                decoration: BoxDecoration(
+                  gradient: isParticipant
+                      ? LinearGradient(
+                          colors: [Colors.red[300]!, Colors.red[700]!])
+                      : LinearGradient(
+                          colors: [Colors.green[300]!, Colors.green[700]!]),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: TextButton(
+                  onPressed: () async {
+                    if (isParticipant) {
+                      await eventController.leaveEvent(eventId);
+                    } else {
+                      await eventController.joinEvent(eventId);
+                    }
+                  },
+                  style: TextButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    backgroundColor: Colors.transparent,
+                    foregroundColor: Colors.white,
+                    disabledForegroundColor: Colors.grey,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        isParticipant ? Icons.logout : Icons.login,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        isParticipant ? 'Leave' : 'Join',
+                        style: buttonTextStyle,
+                      ),
+                    ],
+                  ),
+                ),
               ),
             );
           }),
@@ -72,7 +115,7 @@ class EventInfoScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Card(
-                  color: secondaryColor,
+                  color: const Color(0xFF1D1E33),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
                   child: ListTile(
@@ -83,9 +126,9 @@ class EventInfoScreen extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           SportIconGetter.getSportIcon(event.sportName ?? ''),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                           Expanded(
-                            child: Text('${event.sportName ?? 'N/A'}',
+                            child: Text('${event.sportName}',
                                 style: subtitleStyle),
                           ),
                         ],
@@ -131,9 +174,8 @@ class EventInfoScreen extends StatelessWidget {
     details.forEach((title, value) {
       detailsList.add(
         Card(
-          color: Color(0xFF1D1E33),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          color: const Color(0xFF1D1E33),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
           child: ListTile(
             title: Text(title, style: titleStyle),
             subtitle: Text(value, style: subtitleStyle),
@@ -144,7 +186,7 @@ class EventInfoScreen extends StatelessWidget {
 
     detailsList.add(
       Card(
-        color: Color(0xFF1D1E33),
+        color: const Color(0xFF1D1E33),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: ListTile(
           title: Text('Participants', style: titleStyle),
@@ -165,12 +207,13 @@ class EventInfoScreen extends StatelessWidget {
                                     : null,
                                 child: participant.avatarUrl == null ||
                                         participant.avatarUrl!.isEmpty
-                                    ? Icon(Icons.person,
+                                    ? const Icon(Icons.person,
                                         size: 20, color: Colors.white)
                                     : null,
                               ),
-                              SizedBox(width: 8),
-                              Text('${participant.name} ${participant.surname}',
+                              const SizedBox(width: 8),
+                              Text(
+                                  '${participant.name} ${participant.surname}${participant.id == currentUserId ? " (You)" : ""}',
                                   style: subtitleStyle),
                             ],
                           ))
