@@ -7,7 +7,6 @@ import 'package:sportconnect/src/services/sport_service.dart';
 import 'package:sportconnect/src/services/location_service.dart';
 import 'package:sportconnect/src/services/skill_level_service.dart';
 import 'package:sportconnect/src/models/member.dart';
-import 'package:sportconnect/src/models/media.dart';
 
 class UserEvent {
   final Event event;
@@ -31,21 +30,21 @@ class EventController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchEvents();
-    fetchUserEvents();
+    refreshEventInfo();
   }
 
   Future<void> fetchEvents() async {
     List<Event> events = await eventService.getAllEvents();
-    List<Event> upcomingEvents = [];
     var currentTime = DateTime.now();
 
-    await Future.forEach<Event>(events, (event) async {
-      await fetchEventDetails(event);
-      if (event.startTime!.isAfter(currentTime)) {
-        upcomingEvents.add(event);
-      }
-    });
+    List<Future> detailFutures = [];
+    for (var event in events) {
+      detailFutures.add(fetchEventDetails(event));
+    }
+    await Future.wait(detailFutures);
+
+    List<Event> upcomingEvents =
+        events.where((e) => e.startTime!.isAfter(currentTime)).toList();
 
     eventsList.value = events;
     upcomingEventsList.value = upcomingEvents;
@@ -53,48 +52,60 @@ class EventController extends GetxController {
 
   Future<void> fetchUserEvents() async {
     String userId = supabase.auth.currentUser!.id;
-
     var userEventsWithParticipation = await eventService.getUserEvents(userId);
 
+    List<Future> detailFutures = [];
     List<UserEvent> userEvents = [];
-    await Future.forEach<Map<String, dynamic>>(userEventsWithParticipation,
-        (eventWithParticipation) async {
+
+    for (var eventWithParticipation in userEventsWithParticipation) {
       Event event = eventWithParticipation['event'];
       bool participated = eventWithParticipation['assisted'];
-
-      await fetchEventDetails(event);
       userEvents.add(UserEvent(event: event, participated: participated));
-    });
+      detailFutures.add(fetchEventDetails(event));
+    }
+
+    await Future.wait(detailFutures);
 
     userEventsList.value = userEvents;
   }
 
   Future<void> fetchEventDetails(Event event) async {
+    var futures = <Future>[];
+
     if (event.idSport != null) {
-      final sport = await sportService.getSportById(event.idSport!);
-      event.sportName = sport.name;
+      futures.add(sportService
+          .getSportById(event.idSport!)
+          .then((sport) => event.sportName = sport.name));
     }
     if (event.idSkillLevel != null) {
-      final skillLevel =
-          await skillLevelService.getSkillLevelById(event.idSkillLevel!);
-      event.skillLevelName = skillLevel.name;
+      futures.add(skillLevelService
+          .getSkillLevelById(event.idSkillLevel!)
+          .then((skill) => event.skillLevelName = skill.name));
     }
     if (event.idLocation != null) {
-      final location = await locationService.getLocationById(event.idLocation!);
-      event.location = location;
-      RxList<Member> participants =
-          await eventService.getEventParticipants(event.idEvent);
-      event.participants = participants;
+      futures.add(locationService
+          .getLocationById(event.idLocation!)
+          .then((loc) => event.location = loc));
+      futures.add(eventService
+          .getEventParticipants(event.idEvent)
+          .then((participants) => event.participants = participants));
     }
+    if (event.organizerId != null) {
+      futures.add(MemberService()
+          .getMemberById(event.organizerId!)
+          .then((organizer) => event.organizer = organizer));
+    }
+    futures.add(eventService
+        .getEventMedia(event.idEvent)
+        .then((media) => event.media?.value = media));
 
-    List<Media> media = await eventService.getEventMedia(event.idEvent);
-    event.media?.value = media;
-
+    await Future.wait(futures);
     initializeParticipationStatus(event.idEvent);
   }
 
   Future<void> refreshEventInfo() async {
     await fetchEvents();
+    await fetchUserEvents();
   }
 
   Future<bool> isCurrentUserParticipant(Event event) async {
@@ -120,8 +131,21 @@ class EventController extends GetxController {
         Member newParticipant = await MemberService().getMemberById(userId);
         eventsList.value[eventIndex].participants?.add(newParticipant);
         eventsList.refresh();
+
+        bool isUpcoming =
+            eventsList.value[eventIndex].startTime!.isAfter(DateTime.now());
+        bool isParticipant = eventsList.value[eventIndex].participants!
+            .any((m) => m.id == userId);
+
+        if (isUpcoming && !isParticipant) {
+          UserEvent newUserEvent = UserEvent(
+              event: eventsList.value[eventIndex], participated: true);
+          userEventsList.value = [...userEventsList.value, newUserEvent];
+          userEventsList.refresh();
+        }
+
+        isCurrentUserParticipating.value = true;
       }
-      isCurrentUserParticipating.value = true;
     } catch (e) {
       print("Error joining event: $e");
     }
@@ -152,5 +176,16 @@ class EventController extends GetxController {
       bool isParticipant = await isCurrentUserParticipant(event);
       isCurrentUserParticipating.value = isParticipant;
     }
+  }
+
+  void addNewEvent(Event event) {
+    var currentTime = DateTime.now();
+    eventsList.value = [...eventsList.value, event];
+    if (event.startTime!.isAfter(currentTime)) {
+      upcomingEventsList.value = [...upcomingEventsList.value, event];
+    }
+    eventsList.refresh();
+    upcomingEventsList.refresh();
+    userEventsList.refresh();
   }
 }

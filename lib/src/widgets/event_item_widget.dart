@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:get/get.dart';
 import 'package:sportconnect/src/models/event.dart';
 import 'package:sportconnect/src/utils/sport_icon_getter.dart';
-import 'package:get/get.dart'; // Import GetX if you're using it for navigation
-import 'package:sportconnect/src/pages/event_info_screen.dart'; // Import your EventInfoScreen
+import 'package:sportconnect/src/pages/event_info_screen.dart';
 
 class EventItemWidget extends StatelessWidget {
   final Event event;
@@ -15,72 +15,59 @@ class EventItemWidget extends StatelessWidget {
     Widget sportIcon =
         SportIconGetter.getSportIcon(event.sportName ?? 'Unknown');
     String formattedStartTime = event.startTime != null
-        ? DateFormat('EEE, MMM d, yyyy').format(event.startTime!)
-        : 'Date not set';
+        ? DateFormat('MMM d - yyyy, kk:mm').format(event.startTime!)
+        : 'Date and time not set';
 
-    String registrationStatus =
-        event.isRegistrationOpen ? "Registration Open" : "Registration Closed";
+    String registrationStatus = event.isRegistrationOpen ? "Open" : "Closed";
+
+    const TextStyle titleStyle = TextStyle(
+        fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1AC077));
+    const TextStyle detailStyle = TextStyle(fontSize: 16, color: Colors.white);
+    const TextStyle registrationStyle = TextStyle(
+        fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold);
 
     Decoration containerDecoration = BoxDecoration(
-      gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [Colors.white, Colors.grey.shade200],
-      ),
-      borderRadius: BorderRadius.circular(12.0),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey.withOpacity(0.3),
-          spreadRadius: 2,
-          blurRadius: 6,
-          offset: Offset(0, 3),
-        ),
-      ],
-    );
+        color: const Color(0xFF1D1E33),
+        borderRadius: BorderRadius.circular(12.0));
 
     return GestureDetector(
-      onTap: () {
-        Get.to(() => EventInfoScreen(eventId: event.idEvent));
-      },
+      onTap: () => Get.to(() => EventInfoScreen(eventId: event.idEvent)),
       child: Container(
-        margin: EdgeInsets.all(8.0),
-        padding: EdgeInsets.all(16.0),
+        margin: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(16.0),
         decoration: containerDecoration,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CircleAvatar(
-              backgroundColor: Colors.grey.shade300,
+              backgroundColor: Colors.grey.shade800,
               child: sportIcon,
             ),
-            SizedBox(width: 16.0),
+            const SizedBox(width: 16.0),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(event.sportName ?? 'Sport Name',
-                      style: TextStyle(
-                          fontSize: 20.0, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 4.0),
-                  Text(formattedStartTime,
-                      style: TextStyle(color: Colors.grey.shade600)),
-                  SizedBox(height: 8.0),
-                  Text(event.location?.name ?? 'Location not set',
-                      style: TextStyle(fontSize: 16.0)),
-                  SizedBox(height: 4.0),
-                  Text(event.location?.address ?? '',
-                      style: TextStyle(
-                          fontSize: 14.0, color: Colors.grey.shade600)),
-                  SizedBox(height: 8.0),
-                  Text(event.skillLevelName ?? 'Skill Level',
-                      style: TextStyle(fontSize: 14.0)),
-                  SizedBox(height: 8.0),
-                  Text(registrationStatus,
-                      style: TextStyle(
-                          fontSize: 14.0,
-                          color: event.isRegistrationOpen
-                              ? Colors.green
-                              : Colors.red)),
+                  Text('Sport: ${event.sportName ?? 'Unknown'}',
+                      style: titleStyle),
+                  const SizedBox(height: 4.0),
+                  Text('Starts: $formattedStartTime', style: detailStyle),
+                  const SizedBox(height: 8.0),
+                  Text('Location: ${event.location?.name ?? 'Not specified'}',
+                      style: detailStyle),
+                  const SizedBox(height: 4.0),
+                  Text('Address: ${event.location?.address ?? 'Not available'}',
+                      style: detailStyle),
+                  const SizedBox(height: 8.0),
+                  Text('Skill level: ${event.skillLevelName ?? 'Not set'}',
+                      style: detailStyle),
+                  const SizedBox(height: 8.0),
+                  Text('Registration: $registrationStatus',
+                      style: registrationStyle.apply(
+                        color: event.isRegistrationOpen
+                            ? Colors.green
+                            : Colors.red,
+                      )),
                 ],
               ),
             ),
