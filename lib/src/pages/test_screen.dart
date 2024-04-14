@@ -3,7 +3,7 @@ import 'package:sportconnect/src/utils/sport_icon_getter.dart';
 import 'package:sportconnect/src/services/sport_service.dart';
 
 class TestLevelScreen extends StatefulWidget {
-  const TestLevelScreen({Key? key}) : super(key: key);
+  const TestLevelScreen({super.key});
 
   @override
   _TestLevelScreenState createState() => _TestLevelScreenState();

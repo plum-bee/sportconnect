@@ -7,7 +7,7 @@ import 'package:sportconnect/src/utils/sport_icon_getter.dart';
 class ActivityItemWidget extends StatelessWidget {
   final UserEvent userEvent;
 
-  ActivityItemWidget({Key? key, required this.userEvent}) : super(key: key);
+  const ActivityItemWidget({super.key, required this.userEvent});
 
   @override
   Widget build(BuildContext context) {
@@ -34,14 +34,14 @@ class ActivityItemWidget extends StatelessWidget {
           color: Colors.grey.withOpacity(0.3),
           spreadRadius: 2,
           blurRadius: 6,
-          offset: Offset(0, 3),
+          offset: const Offset(0, 3),
         ),
       ],
     );
 
     return Container(
-      margin: EdgeInsets.all(8.0),
-      padding: EdgeInsets.all(16.0),
+      margin: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(16.0),
       decoration: containerDecoration,
       child: Row(
         crossAxisAlignment:
@@ -51,7 +51,7 @@ class ActivityItemWidget extends StatelessWidget {
             backgroundColor: Colors.grey.shade300,
             child: sportIcon,
           ),
-          SizedBox(width: 16.0),
+          const SizedBox(width: 16.0),
           Expanded(
             child: Column(
               crossAxisAlignment:
@@ -59,21 +59,21 @@ class ActivityItemWidget extends StatelessWidget {
               children: [
                 Text(event.sportName ?? 'Sport Name',
                     style:
-                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-                SizedBox(height: 4.0),
+                        const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 4.0),
                 Text(formattedStartTime,
                     style: TextStyle(color: Colors.grey.shade600)),
-                SizedBox(height: 8.0),
+                const SizedBox(height: 8.0),
                 Text(event.location?.name ?? 'Location not set',
-                    style: TextStyle(fontSize: 16.0)),
-                SizedBox(height: 4.0),
+                    style: const TextStyle(fontSize: 16.0)),
+                const SizedBox(height: 4.0),
                 Text(event.location?.address ?? '',
                     style:
                         TextStyle(fontSize: 14.0, color: Colors.grey.shade600)),
-                SizedBox(height: 8.0),
+                const SizedBox(height: 8.0),
                 Text(event.skillLevelName ?? 'Skill Level',
-                    style: TextStyle(fontSize: 14.0)),
-                SizedBox(height: 8.0),
+                    style: const TextStyle(fontSize: 14.0)),
+                const SizedBox(height: 8.0),
                 Text(registrationStatus,
                     style: TextStyle(
                         fontSize: 14.0,
@@ -81,7 +81,7 @@ class ActivityItemWidget extends StatelessWidget {
                             ? Colors.green
                             : Colors.red)),
                 Padding(
-                  padding: EdgeInsets.only(top: 8.0),
+                  padding: const EdgeInsets.only(top: 8.0),
                   child: Text(participationStatus,
                       style: TextStyle(
                           color: userEvent.participated

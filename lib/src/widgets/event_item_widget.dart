@@ -8,7 +8,7 @@ import 'package:sportconnect/src/pages/event_info_screen.dart'; // Import your E
 class EventItemWidget extends StatelessWidget {
   final Event event;
 
-  EventItemWidget({Key? key, required this.event}) : super(key: key);
+  const EventItemWidget({super.key, required this.event});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class EventItemWidget extends StatelessWidget {
           color: Colors.grey.withOpacity(0.3),
           spreadRadius: 2,
           blurRadius: 6,
-          offset: Offset(0, 3),
+          offset: const Offset(0, 3),
         ),
       ],
     );
@@ -43,8 +43,8 @@ class EventItemWidget extends StatelessWidget {
         Get.to(() => EventInfoScreen(eventId: event.idEvent));
       },
       child: Container(
-        margin: EdgeInsets.all(8.0),
-        padding: EdgeInsets.all(16.0),
+        margin: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(16.0),
         decoration: containerDecoration,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,28 +53,28 @@ class EventItemWidget extends StatelessWidget {
               backgroundColor: Colors.grey.shade300,
               child: sportIcon,
             ),
-            SizedBox(width: 16.0),
+            const SizedBox(width: 16.0),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(event.sportName ?? 'Sport Name',
-                      style: TextStyle(
-                          fontSize: 20.0, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 4.0),
+                      style: const TextStyle(
+                          fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.green)),
+                  const SizedBox(height: 4.0),
                   Text(formattedStartTime,
                       style: TextStyle(color: Colors.grey.shade600)),
-                  SizedBox(height: 8.0),
+                  const SizedBox(height: 8.0),    
                   Text(event.location?.name ?? 'Location not set',
-                      style: TextStyle(fontSize: 16.0)),
-                  SizedBox(height: 4.0),
+                      style: const TextStyle(fontSize: 16.0, color: Colors.black)),
+                  const SizedBox(height: 4.0),
                   Text(event.location?.address ?? '',
                       style: TextStyle(
                           fontSize: 14.0, color: Colors.grey.shade600)),
-                  SizedBox(height: 8.0),
+                  const SizedBox(height: 8.0),
                   Text(event.skillLevelName ?? 'Skill Level',
-                      style: TextStyle(fontSize: 14.0)),
-                  SizedBox(height: 8.0),
+                      style: const TextStyle(fontSize: 14.0, color: Colors.black)),
+                  const SizedBox(height: 8.0),
                   Text(registrationStatus,
                       style: TextStyle(
                           fontSize: 14.0,

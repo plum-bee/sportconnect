@@ -99,7 +99,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Container(
+                          SizedBox(
                             width: constraints.maxWidth * 0.6,
                             child: FormBuilderTextField(
                               name: 'name',
@@ -109,7 +109,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                           ),
                           const SizedBox(height: 16.0),
-                          Container(
+                          SizedBox(
                             width: constraints.maxWidth * 0.6,
                             child: FormBuilderTextField(
                               name: 'surname',
@@ -119,7 +119,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                           ),
                           const SizedBox(height: 16.0),
-                          Container(
+                          SizedBox(
                             width: constraints.maxWidth * 0.6,
                             child: FormBuilderTextField(
                               name: 'email',
@@ -129,7 +129,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                           ),
                           const SizedBox(height: 16.0),
-                          Container(
+                          SizedBox(
                             width: constraints.maxWidth * 0.6,
                             child: FormBuilderTextField(
                               name: 'password',
@@ -152,7 +152,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                           ),
                           const SizedBox(height: 16.0),
-                          Container(
+                          SizedBox(
                             width: constraints.maxWidth * 0.6,
                             child: FormBuilderTextField(
                               name: 'confirm_password',

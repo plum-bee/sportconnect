@@ -94,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Container(
+                          SizedBox(
                             width: constraints.maxWidth * 0.6,
                             child: FormBuilderTextField(
                               name: 'email',
@@ -104,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           const SizedBox(height: 16.0),
-                          Container(
+                          SizedBox(
                             width: constraints.maxWidth * 0.6,
                             child: FormBuilderTextField(
                               name: 'password',
@@ -150,7 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => RegisterScreen()),
+                                        builder: (context) => const RegisterScreen()),
                                   );
                                 },
                                 child: const Text('Sign up'),

@@ -4,7 +4,7 @@ import 'package:sportconnect/src/widgets/activity_item_widget.dart';
 import 'package:sportconnect/src/controllers/event_controller.dart';
 
 class ActivityScreen extends StatelessWidget {
-  ActivityScreen({Key? key}) : super(key: key);
+  ActivityScreen({super.key});
 
   final EventController eventController = Get.find<EventController>();
 
@@ -13,7 +13,7 @@ class ActivityScreen extends StatelessWidget {
     return Scaffold(
       body: Obx(() {
         if (eventController.userEventsList.value.isEmpty) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else {
           return ListView.builder(
             itemCount: eventController.userEventsList.value.length,
