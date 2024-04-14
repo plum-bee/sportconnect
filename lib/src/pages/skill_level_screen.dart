@@ -1,140 +1,179 @@
-// ignore_for_file: avoid_unnecessary_containers
+// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
-import 'package:sportconnect/src/models/sport.dart';
+import 'package:sportconnect/src/pages/login_screen.dart';
+import 'package:sportconnect/src/utils/sport_icon_getter.dart';
 import 'package:sportconnect/src/services/sport_service.dart';
 
-class SkillLevelScreen extends StatelessWidget {
-  final SportService sportService = SportService();
+class SkillLevelScreen extends StatefulWidget {
+  const SkillLevelScreen({super.key});
 
-  SkillLevelScreen({super.key});
+  @override
+  _SkillLevelScreenState createState() => _SkillLevelScreenState();
+}
+
+class _SkillLevelScreenState extends State<SkillLevelScreen> {
+  List<Map<String, dynamic>> selectedSports = [];
+  List<String> sportNames = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSportNames();
+  }
+
+  Future<void> _loadSportNames() async {
+    final sportService = SportService();
+    sportNames = await sportService.getAllSportNames();
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Container(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center, 
-            children: [
-              Image.asset(
-                'assets/images/logo.png',
-                width: MediaQuery.of(context).size.width *
-                    0.1,
-                height: MediaQuery.of(context).size.height *
-                    0.1,
-                fit: BoxFit.contain,
-              ),
-              const SizedBox(
-                width: 8, // Add space between the image and the title
-              ),
-              Text(
-                'Sport Connect',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+        title: const Text('Skill Level'),
+        automaticallyImplyLeading: false,
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: selectedSports.length,
+              itemBuilder: (context, index) {
+                return _buildSportContainer(selectedSports[index]);
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                FloatingActionButton(
+                  onPressed: () {
+                    _showSportsDialog();
+                  },
+                  child: const Icon(Icons.add),
                 ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginScreen()),
+                    );
+                  },
+                  child: const Text('Finish'),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSportContainer(Map<String, dynamic> sport) {
+    return Container(
+      margin: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        border: Border.all(),
+        color: const Color.fromARGB(255, 132, 131, 131),
+      ),
+      child: Row(
+        children: [
+          SportIconGetter.getSportIcon(sport['name']),
+          const SizedBox(width: 16),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                sport['name'],
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+              const SizedBox(height: 8),
+              DropdownButton<String>(
+                value: sport['skillLevel'],
+                onChanged: (value) {
+                  setState(() {
+                    sport['skillLevel'] = value!;
+                  });
+                },
+                items: <String>['Beginner', 'Amateur', 'Pro']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
               ),
             ],
           ),
-        ),
-        centerTitle: false, // Set centerTitle to false
-      ),
-      body: Center(
-        child: FutureBuilder<List<Sport>>(
-          future: sportService.getAllSports(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator(); // Muestra un indicador de carga mientras se obtienen los datos
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else {
-              final sports = snapshot.data!;
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 20),
-                  for (var i = 0; i < sports.length; i++)
-                    Column(
-                      children: [
-                        _SkillLevelContainer(sports[i].name),
-                        if (i < sports.length - 1)
-                          const SizedBox(
-                              height:
-                                  10), // Agrega espacio entre los contenedores de cada deporte
-                      ],
-                    ),
-                  const SizedBox(height: 20),
-                ],
-              );
-            }
-          },
-        ),
+          const Spacer(),
+          IconButton(
+            onPressed: () {
+              setState(() {
+                selectedSports.remove(sport);
+              });
+            },
+            icon: const Icon(Icons.delete),
+          ),
+        ],
       ),
     );
   }
-}
 
-class _SkillLevelContainer extends StatefulWidget {
-  final String sportName;
-
-  const _SkillLevelContainer(this.sportName);
-
-  @override
-  _SkillLevelContainerState createState() => _SkillLevelContainerState();
-}
-
-class _SkillLevelContainerState extends State<_SkillLevelContainer> {
-  double _value = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(
-              width: 8,
-            ), // Agrega espacio entre la imagen y el texto
-            Text(
-              'Choose your skill level for ${widget.sportName}:',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12), // Agrega espacio entre el texto y el slider
-        _SkillLevelSlider(),
-      ],
-    );
-  }
-}
-
-class _SkillLevelSlider extends StatefulWidget {
-  @override
-  _SkillLevelSliderState createState() => _SkillLevelSliderState();
-}
-
-class _SkillLevelSliderState extends State<_SkillLevelSlider> {
-  double _value = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return Slider(
-      value: _value,
-      onChanged: (newValue) {
-        setState(() {
-          _value = newValue;
-        });
+  Future<void> _showSportsDialog() async {
+    final selectedSport = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text('Select Sport'),
+          children: sportNames.map((sport) {
+            return SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(context, sport);
+              },
+              child: Text(sport),
+            );
+          }).toList(),
+        );
       },
-      min: 0,
-      max: 2,
-      divisions: 2,
-      label: _value == 0
-          ? 'Beginner'
-          : _value == 1
-              ? 'Intermediate'
-              : 'Advanced',
     );
+
+    if (selectedSport != null) {
+      bool alreadySelected =
+          selectedSports.any((sport) => sport['name'] == selectedSport);
+
+      if (!alreadySelected) {
+        setState(() {
+          selectedSports.add({'name': selectedSport, 'skillLevel': 'Beginner'});
+        });
+      } else {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Error'),
+              content: const Text('Este deporte ya ha sido seleccionado.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }
   }
 }
