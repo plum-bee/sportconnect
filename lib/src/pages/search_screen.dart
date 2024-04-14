@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:sportconnect/src/controllers/location_controller.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -10,6 +12,8 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+  final LocationController locationController = Get.put(LocationController());
+
   final List<String> items = [
     'Texto 1',
     'Texto 2',
@@ -81,18 +85,54 @@ class _SearchScreenState extends State<SearchScreen> {
               const SizedBox(height: 20.0),
               Container(
                   height: screenSize.height * 0.7,
-                  // Reemplaza la imagen estática por un mapa interactivo
                   child: FlutterMap(
                     options: const MapOptions(
-                      initialCenter: LatLng(40.416775,-3.703790), 
+                      initialCenter: LatLng(40.416775, -3.703790),
                       initialZoom: 13.0,
                     ),
                     children: [
                       TileLayer(
                           urlTemplate:
-                              "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-                        ),
-                      // Aquí puedes añadir más capas como MarkerLayerWidget si necesitas
+                              "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibHVtaXpvciIsImEiOiJjbHV3cXZhbXkwaTZvMnBudmkyZms1bXV6In0.R1wnaCdQitGymGJfImGfgg",
+                          additionalOptions: const {
+                            'access_token':
+                                "pk.eyJ1IjoibHVtaXpvciIsImEiOiJjbHV3cXZhbXkwaTZvMnBudmkyZms1bXV6In0.R1wnaCdQitGymGJfImGfgg",
+                            'id': "mapbox/streets-v12"
+                          }),
+                      MarkerLayer(
+                        markers: locationController.allLocations.value
+                            .map((location) {
+                          return  Marker(
+                            width: 80.0,
+                            height: 80.0,
+                            point: location.getLatLng(location.coordinates),
+                            child: GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                 context: context,
+                                 builder: (context) => AlertDialog(
+                                    title: Text(location.name),
+                                    content: Text(location.address),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text('Close'),
+                                      ),
+                                    ],
+                                  ),
+                                 );
+                              },
+                              child: const Icon(
+                                Icons.location_on,
+                                color: Colors.red,
+                                size: 40.0
+                            ))
+                          );
+                        }).toList(),
+                      ),
+                      
                     ],
                   )),
             ],

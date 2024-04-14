@@ -5,7 +5,7 @@ import 'package:sportconnect/src/services/location_service.dart';
 class LocationController extends GetxController {
   final LocationService locationService = LocationService();
   final Rx<Location?> currentLocation = Rx<Location?>(null);
-  final RxList<Location> allLocations = RxList<Location>();
+  final RxList<Location> allLocations = RxList<Location>(); 
 
   @override
   void onInit() {
