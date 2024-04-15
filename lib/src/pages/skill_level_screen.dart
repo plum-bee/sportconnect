@@ -1,9 +1,8 @@
-// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
 import 'package:sportconnect/src/pages/main_screen.dart';
 import 'package:sportconnect/src/utils/sport_icon_getter.dart';
 import 'package:sportconnect/src/services/sport_service.dart';
+import 'package:sportconnect/main.dart';
 
 class SkillLevelScreen extends StatefulWidget {
   const SkillLevelScreen({super.key});
@@ -16,16 +15,42 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
   List<Map<String, dynamic>> selectedSports = [];
   List<String> sportNames = [];
 
+
   @override
   void initState() {
     super.initState();
     _loadSportNames();
+    _loadUserSportsAndSkills();
   }
 
   Future<void> _loadSportNames() async {
     final sportService = SportService();
     sportNames = await sportService.getAllSportNames();
     setState(() {});
+  }
+
+  Future<void> _loadUserSportsAndSkills() async {
+    try {
+      final sportService = SportService();
+      String userId = supabase.auth.currentUser!.id;
+      selectedSports = await sportService.getUserSportsAndSkills(userId);
+      setState(() {});
+    } catch (e) {
+      print('Failed to load user sports and skills: $e');
+    }
+  }
+
+    void _onFinish() async {
+    try {
+      final sportService = SportService();
+      await sportService.saveUserSports(selectedSports);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const MainScreen()),
+      );
+    } catch (e) {
+      print('Failed to save sports: $e');
+    }
   }
 
   @override
@@ -58,13 +83,7 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
                   child: const Icon(Icons.add),
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const MainScreen()),
-                    );
-                  },
+                  onPressed: _onFinish,
                   child: const Text('Finish'),
                 ),
               ],
