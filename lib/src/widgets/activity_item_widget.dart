@@ -59,20 +59,20 @@ class ActivityItemWidget extends StatelessWidget {
               children: [
                 Text(event.sportName ?? 'Sport Name',
                     style:
-                        const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                        const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.green)),
                 const SizedBox(height: 4.0),
                 Text(formattedStartTime,
                     style: TextStyle(color: Colors.grey.shade600)),
                 const SizedBox(height: 8.0),
                 Text(event.location?.name ?? 'Location not set',
-                    style: const TextStyle(fontSize: 16.0)),
+                    style: const TextStyle(fontSize: 16.0, color: Colors.black)),
                 const SizedBox(height: 4.0),
                 Text(event.location?.address ?? '',
                     style:
                         TextStyle(fontSize: 14.0, color: Colors.grey.shade600)),
                 const SizedBox(height: 8.0),
                 Text(event.skillLevelName ?? 'Skill Level',
-                    style: const TextStyle(fontSize: 14.0)),
+                    style: const TextStyle(fontSize: 14.0, color: Colors.black)),
                 const SizedBox(height: 8.0),
                 Text(registrationStatus,
                     style: TextStyle(

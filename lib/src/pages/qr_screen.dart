@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use, library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -45,8 +43,6 @@ class _QRScreenState extends State<QRScreen> {
                 painter: QrPainter(
                   data: qrData,
                   version: QrVersions.auto,
-                  color: Colors.black,
-                  emptyColor: Colors.white,
                 ),
               ),
               const SizedBox(height: 20),

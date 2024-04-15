@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:sportconnect/src/controllers/location_controller.dart';
 import 'package:sportconnect/src/widgets/location_item_widget.dart';
+import 'package:sportconnect/src/pages/location_info_screen.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -104,21 +105,7 @@ class _SearchScreenState extends State<SearchScreen> {
               point: location.getLatLng(location.coordinates),
               child: GestureDetector(
                 onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text(location.name),
-                      content: Text(location.address),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('Close'),
-                        ),
-                      ],
-                    ),
-                  );
+                  Get.to(() => LocationInfoScreen(location: location));
                 },
                 child: const Icon(Icons.location_on, color: Colors.red, size: 40.0)
               )

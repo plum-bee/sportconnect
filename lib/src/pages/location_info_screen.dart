@@ -46,15 +46,15 @@ class LocationInfoScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text("Additional Details", style: titleStyle),
             Card(
-              color: Color(0xFF1D1E33),
+              color: const Color(0xFF1D1E33),
               child: ListTile(
                 title: Text("Create Event", style: titleStyle),
                 onTap: () {
                 },
-                subtitle: Icon(Icons.map, color: Colors.white),
+                subtitle: const Icon(Icons.map, color: Colors.white),
               ),
             ),
           ],
