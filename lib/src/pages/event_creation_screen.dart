@@ -13,6 +13,9 @@ import 'package:sportconnect/src/controllers/event_controller.dart';
 import 'package:sportconnect/src/models/event.dart';
 
 class EventCreationPage extends StatefulWidget {
+  final Location? location;
+  EventCreationPage({Key? key, this.location = null}) : super(key: key);
+
   @override
   _EventCreationPageState createState() => _EventCreationPageState();
 }

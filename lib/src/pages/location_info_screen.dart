@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sportconnect/src/models/location.dart';
+import 'package:sportconnect/src/pages/event_creation_screen.dart';
 
 class LocationInfoScreen extends StatelessWidget {
   final Location location;
@@ -14,8 +15,8 @@ class LocationInfoScreen extends StatelessWidget {
 
     TextStyle titleStyle = const TextStyle(
         fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1AC077));
-    TextStyle subtitleStyle = const TextStyle(
-        fontSize: 16, color: Colors.white);
+    TextStyle subtitleStyle =
+        const TextStyle(fontSize: 16, color: Colors.white);
 
     return Scaffold(
       appBar: AppBar(
@@ -53,6 +54,9 @@ class LocationInfoScreen extends StatelessWidget {
               child: ListTile(
                 title: Text("Create Event", style: titleStyle),
                 onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => EventCreationPage(location: location),
+                  ));
                 },
                 subtitle: const Icon(Icons.map, color: Colors.white),
               ),
