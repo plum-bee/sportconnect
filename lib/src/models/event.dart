@@ -40,7 +40,7 @@ class Event {
       idSkillLevel: map['id_skill_level'],
       startTime:
           map['start_time'] != null ? DateTime.parse(map['start_time']) : null,
-      isRegistrationOpen: map['is_finished'] ?? false,
+      isRegistrationOpen: map['is_registration_open'] ?? false,
       organizerId: map['organizer_id'],
     );
   }
@@ -52,7 +52,7 @@ class Event {
       'id_sport': idSport,
       'id_skill_level': idSkillLevel,
       'start_time': startTime?.toIso8601String(),
-      'is_finished': isRegistrationOpen,
+      'is_registration_open': isRegistrationOpen,
       'organizer_id': organizerId,
     };
   }

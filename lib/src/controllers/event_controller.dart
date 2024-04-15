@@ -103,6 +103,29 @@ class EventController extends GetxController {
     initializeParticipationStatus(event.idEvent);
   }
 
+  Future<void> updateEventDetails(int eventId) async {
+    Event updatedEvent = await eventService.getEventById(eventId);
+    await fetchEventDetails(updatedEvent);
+
+    int eventIndex = eventsList.value.indexWhere((e) => e.idEvent == eventId);
+    if (eventIndex != -1) {
+      eventsList.value[eventIndex] = updatedEvent;
+      eventsList.refresh();
+    }
+
+    int upcomingIndex =
+        upcomingEventsList.value.indexWhere((e) => e.idEvent == eventId);
+    if (upcomingIndex != -1) {
+      upcomingEventsList.value[upcomingIndex] = updatedEvent;
+      upcomingEventsList.refresh();
+    } else {
+      if (updatedEvent.startTime!.isAfter(DateTime.now())) {
+        upcomingEventsList.value.add(updatedEvent);
+        upcomingEventsList.refresh();
+      }
+    }
+  }
+
   Future<void> refreshEventInfo() async {
     await fetchEvents();
     await fetchUserEvents();

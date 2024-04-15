@@ -57,23 +57,14 @@ class EventService {
   }
 
   Future<void> updateEvent(Event event) async {
-    final response = await supabase
+    await supabase
         .from(_tableName)
         .update(event.toJson())
         .eq('id_event', event.idEvent);
-
-    if (response == null) {
-      throw Exception('Failed to update event: ${response.error!.message}');
-    }
   }
 
   Future<void> deleteEvent(int eventId) async {
-    final response =
-        await supabase.from(_tableName).delete().eq('id_event', eventId);
-
-    if (response == null) {
-      throw Exception('Failed to delete event: ${response.error!.message}');
-    }
+    await supabase.from(_tableName).delete().eq('id_event', eventId);
   }
 
   Future<RxList<Member>> getEventParticipants(int eventId) async {

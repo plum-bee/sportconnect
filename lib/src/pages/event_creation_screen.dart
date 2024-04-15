@@ -179,7 +179,7 @@ class _EventCreationPageState extends State<EventCreationPage> {
                               Event newEvent = Event.fromMap(response);
                               eventController.addNewEvent(newEvent);
                               eventController.refreshEventInfo();
-                              await eventController.joinEvent(newEvent.idEvent);
+                              eventController.joinEvent(newEvent.idEvent);
 
                               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                   content: Text(
