@@ -3,6 +3,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'register_screen.dart';
 import 'package:sportconnect/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,6 +16,11 @@ class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
   bool _isLoading = false;
   bool _isPasswordHidden = true;
+
+  Future<bool> isFirstTimeUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('isFirstTime') ?? true;
+  }
 
   Future<void> _signIn() async {
     final form = _formKey.currentState;
@@ -31,11 +37,16 @@ class _LoginScreenState extends State<LoginScreen> {
           email: email.trim(),
           password: password.trim(),
         );
+        final isFirstTime = await isFirstTimeUser();
         if (mounted) {
-          Navigator.of(context).pushReplacementNamed('/main');
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Sign in successful!')),
-          );
+          if (isFirstTime) {
+            Navigator.of(context).pushReplacementNamed('/skill');
+          } else {
+            Navigator.of(context).pushReplacementNamed('/main');
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Sign in successful!')),
+            );
+          }
         }
       } on AuthException catch (error) {
         if (mounted) {
@@ -150,7 +161,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => const RegisterScreen()),
+                                        builder: (context) =>
+                                            const RegisterScreen()),
                                   );
                                 },
                                 child: const Text('Sign up'),

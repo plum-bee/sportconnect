@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
-import 'package:sportconnect/src/pages/login_screen.dart';
+import 'package:sportconnect/src/pages/main_screen.dart';
 import 'package:sportconnect/src/utils/sport_icon_getter.dart';
 import 'package:sportconnect/src/services/sport_service.dart';
 
@@ -62,7 +62,7 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const LoginScreen()),
+                          builder: (context) => const MainScreen()),
                     );
                   },
                   child: const Text('Finish'),
