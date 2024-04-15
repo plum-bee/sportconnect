@@ -1,7 +1,8 @@
-<<<<<<< Updated upstream
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:sportconnect/src/controllers/event_controller.dart';
 
 class QRScreen extends StatefulWidget {
   const QRScreen({super.key});
@@ -13,6 +14,7 @@ class QRScreen extends StatefulWidget {
 class _QRScreenState extends State<QRScreen> {
   String qrData = "/login";
   final qrKey = GlobalKey(debugLabel: 'QR');
+  
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +23,12 @@ class _QRScreenState extends State<QRScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Center(
+          
           child: ConstrainedBox(
             constraints: BoxConstraints(
               maxWidth: screenSize.width * 0.5,
               maxHeight: screenSize.height * 0.05,
+            
             ),
             child: Image.asset(
               'assets/images/logo_text.png',
@@ -70,13 +74,13 @@ class _QRScreenState extends State<QRScreen> {
     );
   }
 
-  void _onQRViewCreated(QRViewController controller) {
-    controller.scannedDataStream.listen((scanData) {
-      setState(() {
-        qrData = scanData.code!;
-      });
-    });
-  }
+void _onQRViewCreated(QRViewController controller) {
+  controller.scannedDataStream.listen((scanData) async {
+    int eventId = int.parse(scanData.code!);
+    Get.find<EventController>().confirmAttendance(eventId);
+
+    controller.pauseCamera();
+  });
 }
-=======
->>>>>>> Stashed changes
+
+}

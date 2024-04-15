@@ -109,4 +109,10 @@ class EventService {
         .eq('id_event', eventId)
         .eq('id_user', userId);
   }
+
+  Future<void> confirmUserAttendance(int eventId, String userId) async {
+  await supabase.from('events_participants')
+    .update({'assisted': true})
+    .match({'id_event': eventId, 'id_user': userId});
+}
 }

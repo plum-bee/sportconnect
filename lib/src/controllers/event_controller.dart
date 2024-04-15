@@ -211,4 +211,16 @@ class EventController extends GetxController {
     upcomingEventsList.refresh();
     userEventsList.refresh();
   }
+
+  Future<void> confirmAttendance(int eventId) async {
+  String userId = supabase.auth.currentUser!.id;
+  try {
+    await eventService.confirmUserAttendance(eventId, userId);
+    refreshEventInfo();
+    Get.snackbar("Success", "Attendance confirmed for event ID: $eventId",
+        snackPosition: SnackPosition.BOTTOM);
+  } catch (e) {
+    Get.snackbar("Error", "Failed to confirm attendance: $e",
+        snackPosition: SnackPosition.BOTTOM);  }
+}
 }

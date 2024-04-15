@@ -69,7 +69,7 @@ class EventInfoScreen extends StatelessWidget {
                         showModalBottomSheet(
                           context: context,
                           builder: (BuildContext context) {
-                            return QRCodeWidget(eventData: eventId.toString());
+                            return QRCodeWidget(eventData: eventId.toString(), imageUrl: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=$eventId",);
                           },
                         );
                       },

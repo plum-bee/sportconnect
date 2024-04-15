@@ -1,27 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 class QRCodeWidget extends StatelessWidget {
   final String eventData;
+  final String imageUrl;
 
   const QRCodeWidget({
     Key? key,
     required this.eventData,
+    required this.imageUrl
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: QrImageView(
-        data: eventData,
-        version: QrVersions.auto,
-        size: 200.0,
-        gapless: false,
-        backgroundColor: Colors.white,
-        embeddedImageStyle: const QrEmbeddedImageStyle(
-          size: Size(80, 80),
-        ),
-      ),
+      child: Image.network(imageUrl, width: 300, height: 300, fit: BoxFit.cover,)
     );
   }
 }
