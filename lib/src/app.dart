@@ -6,7 +6,6 @@ import 'package:sportconnect/src/pages/login_screen.dart';
 import 'package:sportconnect/src/pages/register_screen.dart';
 import 'package:sportconnect/src/pages/search_screen.dart';
 import 'package:sportconnect/src/pages/profile_screen.dart';
-import 'package:sportconnect/src/pages/test_screen.dart';
 import 'package:sportconnect/src/pages/main_screen.dart';
 import 'package:get/get.dart';
 
@@ -42,7 +41,6 @@ class SportConnectApp extends StatelessWidget {
         '/profile': (_) => ProfileScreen(),
         '/main': (_) => const MainScreen(),
         '/skill': (_) => const SkillLevelScreen(),
-        '/test': (_) => const TestLevelScreen(),
       },
     );
   }
