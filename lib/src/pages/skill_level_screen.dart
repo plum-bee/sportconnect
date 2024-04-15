@@ -59,9 +59,9 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
     if (currentUser != null) {
       selectedSports = currentUser.userSportsSkills.map((userSportSkill) {
         return {
-          'id': userSportSkill.sport.id,
+          'id': userSportSkill.sport.idSport,
           'name': userSportSkill.sport.name,
-          'skillLevelId': userSportSkill.skillLevel.id
+          'skillLevelId': userSportSkill.skillLevel.idSkillLevel
         };
       }).toList();
     }
@@ -177,7 +177,7 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
                 items: skillLevels
                     .map<DropdownMenuItem<String>>((SkillLevel skillLevel) {
                   return DropdownMenuItem<String>(
-                    value: skillLevel.id.toString(),
+                    value: skillLevel.idSkillLevel.toString(),
                     child: Text(skillLevel.name),
                   );
                 }).toList(),
@@ -214,13 +214,13 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
 
     if (selectedSport != null) {
       bool alreadySelected =
-          selectedSports.any((sport) => sport['id'] == selectedSport.id);
+          selectedSports.any((sport) => sport['id'] == selectedSport.idSport);
       if (!alreadySelected) {
         setState(() {
           selectedSports.add({
-            'id': selectedSport.id,
+            'id': selectedSport.idSport,
             'name': selectedSport.name,
-            'skillLevelId': skillLevels.first.id,
+            'skillLevelId': skillLevels.first.idSkillLevel,
           });
         });
       } else {
