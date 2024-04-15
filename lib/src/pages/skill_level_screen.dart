@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:sportconnect/src/pages/main_screen.dart';
-import 'package:sportconnect/src/utils/sport_icon_getter.dart';
-import 'package:sportconnect/src/services/sport_service.dart';
 import 'package:sportconnect/main.dart';
+import 'package:sportconnect/src/models/sport.dart';
+import 'package:sportconnect/src/models/skill_level.dart';
+import 'package:sportconnect/src/services/sport_service.dart';
+import 'package:sportconnect/src/services/skill_level_service.dart';
+import 'package:sportconnect/src/utils/sport_icon_getter.dart';
+import 'package:get/get.dart';
+import 'package:sportconnect/src/controllers/member_controller.dart';
+import 'package:sportconnect/src/models/member.dart';
 
 class SkillLevelScreen extends StatefulWidget {
   const SkillLevelScreen({super.key});
@@ -13,48 +18,97 @@ class SkillLevelScreen extends StatefulWidget {
 
 class _SkillLevelScreenState extends State<SkillLevelScreen> {
   List<Map<String, dynamic>> selectedSports = [];
-  List<String> sportNames = [];
-
+  List<Sport> sports = [];
+  List<SkillLevel> skillLevels = [];
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadSportNames();
-    _loadUserSportsAndSkills();
+    _initializeData();
   }
 
-  Future<void> _loadSportNames() async {
+  Future<void> _initializeData() async {
+    try {
+      await Future.wait([
+        _loadSports(),
+        _loadSkillLevels(),
+      ]);
+      await _preloadUserSportsAndSkills();
+    } catch (e) {
+      _showErrorDialog('Failed to load data: $e');
+    } finally {
+      setState(() => isLoading = false);
+    }
+  }
+
+  Future<void> _loadSports() async {
     final sportService = SportService();
-    sportNames = await sportService.getAllSportNames();
-    setState(() {});
+    sports = await sportService.getAllSports();
   }
 
-  Future<void> _loadUserSportsAndSkills() async {
-    try {
-      final sportService = SportService();
-      String userId = supabase.auth.currentUser!.id;
-      selectedSports = await sportService.getUserSportsAndSkills(userId);
-      setState(() {});
-    } catch (e) {
-      print('Failed to load user sports and skills: $e');
+  Future<void> _loadSkillLevels() async {
+    final skillLevelService = SkillLevelService();
+    skillLevels = await skillLevelService.getAllSkillLevels();
+  }
+
+  Future<void> _preloadUserSportsAndSkills() async {
+    final MemberController memberController = Get.find<MemberController>();
+    memberController.fetchCurrentUser();
+    Member? currentUser = memberController.currentUser.value;
+    if (currentUser != null) {
+      selectedSports = currentUser.userSportsSkills.map((userSportSkill) {
+        return {
+          'id': userSportSkill.sport.id,
+          'name': userSportSkill.sport.name,
+          'skillLevelId': userSportSkill.skillLevel.id
+        };
+      }).toList();
     }
   }
 
-    void _onFinish() async {
+  void _onFinish() async {
+    final String userId = Get.find<MemberController>().currentUser.value!.id;
+    final entries = selectedSports.map((sport) {
+      return {
+        'id_user': userId,
+        'id_sport': sport['id'],
+        'id_skill_level': sport['skillLevelId']
+      };
+    }).toList();
+
     try {
-      final sportService = SportService();
-      await sportService.saveUserSports(selectedSports);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const MainScreen()),
-      );
+      await supabase.from('user_sport_skill_level').upsert(entries);
+      Navigator.pop(context);
     } catch (e) {
-      print('Failed to save sports: $e');
+      _showErrorDialog('Failed to update sports data: $e');
     }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Error'),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Skill Level'),
@@ -66,9 +120,8 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
           Expanded(
             child: ListView.builder(
               itemCount: selectedSports.length,
-              itemBuilder: (context, index) {
-                return _buildSportContainer(selectedSports[index]);
-              },
+              itemBuilder: (context, index) =>
+                  _buildSportContainer(selectedSports[index]),
             ),
           ),
           Padding(
@@ -77,9 +130,7 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 FloatingActionButton(
-                  onPressed: () {
-                    _showSportsDialog();
-                  },
+                  onPressed: _showSportsDialog,
                   child: const Icon(Icons.add),
                 ),
                 ElevatedButton(
@@ -100,7 +151,7 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
       padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         border: Border.all(),
-        color: const Color.fromARGB(255, 132, 131, 131),
+        color: Colors.grey[300],
       ),
       child: Row(
         children: [
@@ -116,19 +167,18 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
                   fontSize: 18,
                 ),
               ),
-              const SizedBox(height: 8),
               DropdownButton<String>(
-                value: sport['skillLevel'],
+                value: sport['skillLevelId'].toString(),
                 onChanged: (value) {
                   setState(() {
-                    sport['skillLevel'] = value!;
+                    sport['skillLevelId'] = int.parse(value!);
                   });
                 },
-                items: <String>['Beginner', 'Amateur', 'Pro']
-                    .map<DropdownMenuItem<String>>((String value) {
+                items: skillLevels
+                    .map<DropdownMenuItem<String>>((SkillLevel skillLevel) {
                   return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
+                    value: skillLevel.id.toString(),
+                    child: Text(skillLevel.name),
                   );
                 }).toList(),
               ),
@@ -136,11 +186,9 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
           ),
           const Spacer(),
           IconButton(
-            onPressed: () {
-              setState(() {
-                selectedSports.remove(sport);
-              });
-            },
+            onPressed: () => setState(() {
+              selectedSports.remove(sport);
+            }),
             icon: const Icon(Icons.delete),
           ),
         ],
@@ -149,17 +197,15 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
   }
 
   Future<void> _showSportsDialog() async {
-    final selectedSport = await showDialog<String>(
+    final selectedSport = await showDialog<Sport>(
       context: context,
       builder: (BuildContext context) {
         return SimpleDialog(
           title: const Text('Select Sport'),
-          children: sportNames.map((sport) {
+          children: sports.map((sport) {
             return SimpleDialogOption(
-              onPressed: () {
-                Navigator.pop(context, sport);
-              },
-              child: Text(sport),
+              onPressed: () => Navigator.pop(context, sport),
+              child: Text(sport.name),
             );
           }).toList(),
         );
@@ -168,30 +214,17 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
 
     if (selectedSport != null) {
       bool alreadySelected =
-          selectedSports.any((sport) => sport['name'] == selectedSport);
-
+          selectedSports.any((sport) => sport['id'] == selectedSport.id);
       if (!alreadySelected) {
         setState(() {
-          selectedSports.add({'name': selectedSport, 'skillLevel': 'Beginner'});
+          selectedSports.add({
+            'id': selectedSport.id,
+            'name': selectedSport.name,
+            'skillLevelId': skillLevels.first.id,
+          });
         });
       } else {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Error'),
-              content: const Text('Este deporte ya ha sido seleccionado.'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
+        _showErrorDialog('This sport has already been selected.');
       }
     }
   }
