@@ -7,6 +7,7 @@ import 'package:sportconnect/src/models/event.dart';
 import 'package:sportconnect/src/widgets/media_widget.dart';
 import 'package:sportconnect/src/utils/sport_icon_getter.dart';
 import 'package:sportconnect/src/pages/event_edit_screen.dart';
+import 'package:sportconnect/src/widgets/event_qr_widget.dart';
 
 class EventInfoScreen extends StatelessWidget {
   final int eventId;
@@ -46,6 +47,7 @@ class EventInfoScreen extends StatelessWidget {
           return const Text('Event Details',
               style: TextStyle(color: Colors.white));
         }),
+        // Inside AppBar actions of EventInfoScreen
         actions: <Widget>[
           Obx(() {
             bool isParticipant =
@@ -56,33 +58,52 @@ class EventInfoScreen extends StatelessWidget {
             bool isOrganizer = event?.organizerId == currentUserId;
 
             if (isOrganizer) {
-              return Padding(
-                padding: const EdgeInsets.only(right: 16.0),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  width: 100,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: Colors.orange,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) =>
-                                  EventEditScreen(eventId: eventId)));
-                    },
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.transparent,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
+              return Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16.0),
+                    child: IconButton(
+                      icon: Icon(Icons.qr_code),
+                      onPressed: () {
+                        // Display QR code in a bottom sheet
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return QRCodeWidget(eventData: eventId.toString());
+                          },
+                        );
+                      },
                     ),
-                    child: Text('Edit', style: buttonTextStyle),
                   ),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16.0),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      width: 100,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.orange,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) =>
+                                      EventEditScreen(eventId: eventId)));
+                        },
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                        ),
+                        child: Text('Edit', style: buttonTextStyle),
+                      ),
+                    ),
+                  ),
+                ],
               );
             }
 

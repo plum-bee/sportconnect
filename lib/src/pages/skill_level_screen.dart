@@ -61,7 +61,7 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
         return {
           'id': userSportSkill.sport.idSport,
           'name': userSportSkill.sport.name,
-          'skillLevelId': userSportSkill.skillLevel.idSkillLevel
+          'skillLevelId': userSportSkill.skillLevel.idSkillLevel,
         };
       }).toList();
     }
@@ -197,12 +197,12 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
   }
 
   Future<void> _showSportsDialog() async {
-    final selectedSport = await showDialog<Sport>(
+    final Sport? selectedSport = await showDialog<Sport>(
       context: context,
       builder: (BuildContext context) {
         return SimpleDialog(
           title: const Text('Select Sport'),
-          children: sports.map((sport) {
+          children: sports.map((Sport sport) {
             return SimpleDialogOption(
               onPressed: () => Navigator.pop(context, sport),
               child: Text(sport.name),
@@ -213,15 +213,15 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
     );
 
     if (selectedSport != null) {
-      bool alreadySelected =
-          selectedSports.any((sport) => sport['id'] == selectedSport.idSport);
+      bool alreadySelected = selectedSports.any(
+          (Map<String, dynamic> sport) => sport['id'] == selectedSport.idSport);
       if (!alreadySelected) {
         setState(() {
           selectedSports.add({
             'id': selectedSport.idSport,
             'name': selectedSport.name,
-            'skillLevelId': skillLevels.first.idSkillLevel,
-          });
+            'skillLevelId': skillLevels.first.idSkillLevel
+          } as Map<String, dynamic>);
         });
       } else {
         _showErrorDialog('This sport has already been selected.');
