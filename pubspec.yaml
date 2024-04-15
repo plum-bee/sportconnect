@@ -16,7 +16,6 @@ dependencies:
   get: ^4.6.6
   intl: ^0.18.1
   image_picker: ^1.0.5
-  qr_code_scanner: ^1.0.1
   flutter_map: ^6.1.0
   mapbox_gl: ^0.16.0
   latlong2: ^0.9.1

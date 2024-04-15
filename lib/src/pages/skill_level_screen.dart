@@ -59,9 +59,9 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
     if (currentUser != null) {
       selectedSports = currentUser.userSportsSkills.map((userSportSkill) {
         return {
-          'id': userSportSkill.sport.id,
+          'id': userSportSkill.sport.idSport,
           'name': userSportSkill.sport.name,
-          'skillLevelId': userSportSkill.skillLevel.id
+          'skillLevelId': userSportSkill.skillLevel.idSkillLevel,
         };
       }).toList();
     }
@@ -177,7 +177,7 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
                 items: skillLevels
                     .map<DropdownMenuItem<String>>((SkillLevel skillLevel) {
                   return DropdownMenuItem<String>(
-                    value: skillLevel.id.toString(),
+                    value: skillLevel.idSkillLevel.toString(),
                     child: Text(skillLevel.name),
                   );
                 }).toList(),
@@ -197,12 +197,12 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
   }
 
   Future<void> _showSportsDialog() async {
-    final selectedSport = await showDialog<Sport>(
+    final Sport? selectedSport = await showDialog<Sport>(
       context: context,
       builder: (BuildContext context) {
         return SimpleDialog(
           title: const Text('Select Sport'),
-          children: sports.map((sport) {
+          children: sports.map((Sport sport) {
             return SimpleDialogOption(
               onPressed: () => Navigator.pop(context, sport),
               child: Text(sport.name),
@@ -213,15 +213,15 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
     );
 
     if (selectedSport != null) {
-      bool alreadySelected =
-          selectedSports.any((sport) => sport['id'] == selectedSport.id);
+      bool alreadySelected = selectedSports.any(
+          (Map<String, dynamic> sport) => sport['id'] == selectedSport.idSport);
       if (!alreadySelected) {
         setState(() {
           selectedSports.add({
-            'id': selectedSport.id,
+            'id': selectedSport.idSport,
             'name': selectedSport.name,
-            'skillLevelId': skillLevels.first.id,
-          });
+            'skillLevelId': skillLevels.first.idSkillLevel
+          } as Map<String, dynamic>);
         });
       } else {
         _showErrorDialog('This sport has already been selected.');
