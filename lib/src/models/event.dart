@@ -10,12 +10,14 @@ class Event {
   final int? idSkillLevel;
   final DateTime? startTime;
   final bool isRegistrationOpen;
+  final String? organizerId;
 
   String? sportName;
   String? skillLevelName;
   Location? location;
   RxList<Member>? participants = RxList<Member>([]);
   RxList<Media>? media = RxList<Media>([]);
+  Member? organizer;
 
   Event({
     required this.idEvent,
@@ -24,6 +26,7 @@ class Event {
     this.idSkillLevel,
     this.startTime,
     this.isRegistrationOpen = false,
+    this.organizerId,
     this.sportName,
     this.skillLevelName,
     this.location,
@@ -37,7 +40,8 @@ class Event {
       idSkillLevel: map['id_skill_level'],
       startTime:
           map['start_time'] != null ? DateTime.parse(map['start_time']) : null,
-      isRegistrationOpen: map['is_finished'] ?? false,
+      isRegistrationOpen: map['is_registration_open'] ?? false,
+      organizerId: map['organizer_id'],
     );
   }
 
@@ -48,7 +52,8 @@ class Event {
       'id_sport': idSport,
       'id_skill_level': idSkillLevel,
       'start_time': startTime?.toIso8601String(),
-      'is_finished': isRegistrationOpen,
+      'is_registration_open': isRegistrationOpen,
+      'organizer_id': organizerId,
     };
   }
 }

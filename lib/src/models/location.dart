@@ -1,3 +1,4 @@
+import 'package:latlong2/latlong.dart';
 import 'package:sportconnect/src/models/media.dart';
 
 class Location {
@@ -47,4 +48,22 @@ class Location {
       coordinates: map['coordinates'],
     );
   }
+
+LatLng getLatLng(String coordinates) {
+  final parts = coordinates.split(', ');
+  String latPart = parts[0].split('º')[0].trim();
+  String lngPart = parts[1].split('º')[0].trim();
+
+  double lat = double.parse(latPart);
+  double lng = double.parse(lngPart);
+  
+  if (parts[0].contains('S')) {
+    lat = -lat;
+  }
+  if (parts[1].contains('W')) {
+    lng = -lng;
+  }
+
+  return LatLng(lat, lng);
+}
 }

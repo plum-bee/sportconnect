@@ -16,7 +16,7 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<Widget> _widgetOptions = <Widget>[
     HomeScreen(),
-    SearchScreen(),
+    const SearchScreen(),
     const Text('QR',
         style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
     ActivityScreen(),

@@ -8,7 +8,7 @@ import 'package:sportconnect/main.dart';
 import 'package:sportconnect/src/utils/sport_icon_getter.dart';
 
 class ProfileScreen extends StatelessWidget {
-  ProfileScreen({Key? key}) : super(key: key);
+  ProfileScreen({super.key});
 
   final MemberController memberController = Get.put(MemberController());
 

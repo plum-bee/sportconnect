@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:sportconnect/src/controllers/location_controller.dart';
+import 'package:sportconnect/src/widgets/location_item_widget.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -10,15 +13,26 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final List<String> items = [
-    'Texto 1',
-    'Texto 2',
-    'Texto 3',
-    'Texto 4',
-    'Texto 5'
-  ];
-  String dropdownValue = 'Texto 1';
+  final LocationController locationController = Get.put(LocationController());
   final TextEditingController _searchController = TextEditingController();
+  bool showMap = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged() {
+    locationController.filterLocations(_searchController.text);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,18 +40,18 @@ class _SearchScreenState extends State<SearchScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: screenSize.width * 0.5,
-              maxHeight: screenSize.height * 0.05,
-            ),
-            child: Image.asset(
-              'assets/images/logo_text.png',
-              fit: BoxFit.fitWidth,
-            ),
+        title: const Text('Locations'),
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: Icon(showMap ? Icons.list : Icons.map),
+            onPressed: () {
+              setState(() {
+                showMap = !showMap;
+              });
+            },
           ),
-        ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -45,33 +59,8 @@ class _SearchScreenState extends State<SearchScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: DropdownButton<String>(
-                  value: dropdownValue,
-                  icon: const Icon(Icons.arrow_downward),
-                  iconSize: 24,
-                  elevation: 16,
-                  style: const TextStyle(color: Colors.deepPurple),
-                  underline: Container(
-                    height: 2,
-                    color: Colors.deepPurpleAccent,
-                  ),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      dropdownValue = newValue!;
-                    });
-                  },
-                  items: items.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
-              ),
-              const SizedBox(height: 20.0),
-              TextField(
+              if (!showMap) const SizedBox(height: 20.0),
+              if (!showMap) TextField(
                 controller: _searchController,
                 decoration: const InputDecoration(
                   labelText: 'Search',
@@ -79,26 +68,75 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ),
               const SizedBox(height: 20.0),
-              Container(
-                  height: screenSize.height * 0.7,
-                  // Reemplaza la imagen estática por un mapa interactivo
-                  child: FlutterMap(
-                    options: const MapOptions(
-                      initialCenter: LatLng(40.416775,-3.703790), 
-                      initialZoom: 13.0,
-                    ),
-                    children: [
-                      TileLayer(
-                          urlTemplate:
-                              "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-                        ),
-                      // Aquí puedes añadir más capas como MarkerLayerWidget si necesitas
-                    ],
-                  )),
+              SizedBox(
+                height: screenSize.height * 0.7,
+                child: showMap ? _buildMap() : _buildLocationList(),
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildMap() {
+    return FlutterMap(
+      options: const MapOptions(
+        initialCenter: LatLng(41.3732071, 2.1403263),
+        initialZoom: 13.0,
+      ),
+      children: [
+        TileLayer(
+          urlTemplate:
+              "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibHVtaXpvciIsImEiOiJjbHV3cTQ1bW8wZDk5MmpwYnYxMnJ0d2x3In0.pK3SzMwwmQ18o3DNpZGcog",
+          additionalOptions: const {
+            'access_token':
+                "pk.eyJ1IjoibHVmaXpvciIsImEiOiJjbHV3cXZhbXkwaTZvMnBudmkyZms1bXV6In0.R1wnaCdQitGymGJfImGfgg",
+            'id': "mapbox/streets-v12"
+          }
+        ),
+        MarkerLayer(
+          markers: locationController.filteredLocations
+              .map((location) {
+            return Marker(
+              width: 80.0,
+              height: 80.0,
+              point: location.getLatLng(location.coordinates),
+              child: GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text(location.name),
+                      content: Text(location.address),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('Close'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                child: const Icon(Icons.location_on, color: Colors.red, size: 40.0)
+              )
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLocationList() {
+    return Obx(() => ListView.builder(
+          shrinkWrap: true,
+          itemCount: locationController.filteredLocations.length,
+          itemBuilder: (context, index) {
+            return LocationItemWidget(
+                location: locationController.filteredLocations[index]);
+          },
+        ));
   }
 }

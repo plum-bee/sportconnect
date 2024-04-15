@@ -7,7 +7,7 @@ class SportIconGetter {
         return const Icon(Icons.sports_basketball, color: Colors.orange);
       case 'football':
       case 'soccer':
-        return const Icon(Icons.sports_soccer, color: Colors.green);
+        return const Icon(Icons.sports_soccer, color: Colors.grey);
       case 'paddle tennis':
         return const Icon(Icons.sports_tennis, color: Colors.yellow);
       case 'table tennis':

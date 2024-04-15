@@ -1,22 +1,22 @@
 class Sport {
-  final int id;
+  final int idSport;
   final String name;
 
   Sport({
-    required this.id,
+    required this.idSport,
     required this.name,
   });
 
   factory Sport.fromMap(Map<String, dynamic> map) {
     return Sport(
-      id: map['id_sport'] as int,
+      idSport: map['id_sport'] as int,
       name: map['name'] as String,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'id_sport': id,
+      'id_sport': idSport,
       'name': name,
     };
   }
