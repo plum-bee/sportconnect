@@ -233,7 +233,6 @@ class _EventEditScreenState extends State<EventEditScreen> {
                       },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: primaryColor,
-                        overlayColor: Colors.white,
                       ),
                       child: Text('Update'),
                     )

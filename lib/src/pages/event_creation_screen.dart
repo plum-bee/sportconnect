@@ -194,7 +194,6 @@ class _EventCreationPageState extends State<EventCreationPage> {
                       },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: primaryColor,
-                        overlayColor: Colors.white,
                       ),
                       child: Text('Submit'),
                     )

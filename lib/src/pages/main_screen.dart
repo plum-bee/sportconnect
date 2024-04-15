@@ -37,7 +37,7 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Image.asset(
-          '/images/logo_text.png',
+          'assets/images/logo_text.png',
           width: screenSize.width * 0.4,
           height: kToolbarHeight,
         ),
