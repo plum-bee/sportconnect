@@ -40,7 +40,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Locations'),
+        title: const Text('Locations'),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
