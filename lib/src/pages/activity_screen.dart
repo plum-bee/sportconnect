@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sportconnect/src/widgets/activity_item_widget.dart';
 import 'package:sportconnect/src/controllers/event_controller.dart';
+import 'package:sportconnect/src/pages/event_creation_screen.dart'; // Ensure you have this import for your EventCreationPage
 
 class ActivityScreen extends StatelessWidget {
   ActivityScreen({super.key});
@@ -24,6 +25,15 @@ class ActivityScreen extends StatelessWidget {
           );
         }
       }),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => EventCreationPage(),
+          ));
+        },
+        child: Icon(Icons.add),
+        tooltip: 'Create Event',
+      ),
     );
   }
 }

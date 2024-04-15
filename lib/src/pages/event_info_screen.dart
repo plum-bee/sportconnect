@@ -6,6 +6,7 @@ import 'package:sportconnect/src/controllers/event_controller.dart';
 import 'package:sportconnect/src/models/event.dart';
 import 'package:sportconnect/src/widgets/media_widget.dart';
 import 'package:sportconnect/src/utils/sport_icon_getter.dart';
+import 'package:sportconnect/src/pages/event_edit_screen.dart';
 
 class EventInfoScreen extends StatelessWidget {
   final int eventId;
@@ -49,6 +50,42 @@ class EventInfoScreen extends StatelessWidget {
           Obx(() {
             bool isParticipant =
                 eventController.isCurrentUserParticipating.value;
+            Event? event = eventController.eventsList.value
+                .firstWhereOrNull((e) => e.idEvent == eventId);
+
+            bool isOrganizer = event?.organizerId == currentUserId;
+
+            if (isOrganizer) {
+              return Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  width: 100,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.orange,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) =>
+                                  EventEditScreen(eventId: eventId)));
+                    },
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                    ),
+                    child: Text('Edit', style: buttonTextStyle),
+                  ),
+                ),
+              );
+            }
+
             return Padding(
               padding: const EdgeInsets.only(right: 16.0),
               child: AnimatedContainer(
@@ -73,8 +110,7 @@ class EventInfoScreen extends StatelessWidget {
                   },
                   style: TextButton.styleFrom(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+                        borderRadius: BorderRadius.circular(20)),
                     backgroundColor: Colors.transparent,
                     foregroundColor: Colors.white,
                     disabledForegroundColor: Colors.grey,
@@ -82,16 +118,11 @@ class EventInfoScreen extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        isParticipant ? Icons.logout : Icons.login,
-                        color: Colors.white,
-                        size: 20,
-                      ),
+                      Icon(isParticipant ? Icons.logout : Icons.login,
+                          color: Colors.white, size: 20),
                       const SizedBox(width: 8),
-                      Text(
-                        isParticipant ? 'Leave' : 'Join',
-                        style: buttonTextStyle,
-                      ),
+                      Text(isParticipant ? 'Leave' : 'Join',
+                          style: buttonTextStyle),
                     ],
                   ),
                 ),
