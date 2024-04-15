@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:sportconnect/main.dart';
+import 'package:get/get.dart';
 import 'package:sportconnect/src/models/sport.dart';
 import 'package:sportconnect/src/models/skill_level.dart';
 import 'package:sportconnect/src/services/sport_service.dart';
 import 'package:sportconnect/src/services/skill_level_service.dart';
 import 'package:sportconnect/src/utils/sport_icon_getter.dart';
-import 'package:get/get.dart';
 import 'package:sportconnect/src/controllers/member_controller.dart';
 import 'package:sportconnect/src/models/member.dart';
+import 'package:sportconnect/main.dart';
 
 class SkillLevelScreen extends StatefulWidget {
   const SkillLevelScreen({super.key});
@@ -20,7 +20,15 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
   List<Map<String, dynamic>> selectedSports = [];
   List<Sport> sports = [];
   List<SkillLevel> skillLevels = [];
+  List<int> deletedSportIds = []; // Track IDs of sports to delete
   bool isLoading = true;
+
+  final Color primaryColor = const Color(0xFF145D55);
+  final Color accentColor = const Color(0xFF9FBEB9);
+  final TextStyle titleStyle = const TextStyle(
+      fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1AC077));
+  final TextStyle subtitleStyle =
+      const TextStyle(fontSize: 16, color: Colors.white);
 
   @override
   void initState() {
@@ -69,6 +77,15 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
 
   void _onFinish() async {
     final String userId = Get.find<MemberController>().currentUser.value!.id;
+    // Perform deletions
+    for (var sportId in deletedSportIds) {
+      await supabase
+          .from('user_sport_skill_level')
+          .delete()
+          .match({'id_user': userId, 'id_sport': sportId}).execute();
+    }
+
+    // Perform upserts
     final entries = selectedSports.map((sport) {
       return {
         'id_user': userId,
@@ -78,7 +95,8 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
     }).toList();
 
     try {
-      await supabase.from('user_sport_skill_level').upsert(entries);
+      await supabase.from('user_sport_skill_level').upsert(entries).execute();
+      Get.find<MemberController>().fetchCurrentUser();
       Navigator.pop(context);
     } catch (e) {
       _showErrorDialog('Failed to update sports data: $e');
@@ -111,8 +129,8 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Skill Level'),
-        automaticallyImplyLeading: false,
+        backgroundColor: primaryColor,
+        title: const Text('Skill Level', style: TextStyle(color: Colors.white)),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -130,12 +148,13 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 FloatingActionButton(
+                  backgroundColor: accentColor,
                   onPressed: _showSportsDialog,
                   child: const Icon(Icons.add),
                 ),
                 ElevatedButton(
                   onPressed: _onFinish,
-                  child: const Text('Finish'),
+                  child: Text('Finish', style: subtitleStyle),
                 ),
               ],
             ),
@@ -148,47 +167,50 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
   Widget _buildSportContainer(Map<String, dynamic> sport) {
     return Container(
       margin: const EdgeInsets.all(8.0),
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        border: Border.all(),
-        color: Colors.grey[300],
-      ),
+          color: const Color(0xFF1D1E33),
+          borderRadius: BorderRadius.circular(12.0),
+          border: Border.all(color: primaryColor)),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SportIconGetter.getSportIcon(sport['name']),
-          const SizedBox(width: 16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                sport['name'],
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
-              DropdownButton<String>(
-                value: sport['skillLevelId'].toString(),
-                onChanged: (value) {
-                  setState(() {
-                    sport['skillLevelId'] = int.parse(value!);
-                  });
-                },
-                items: skillLevels
-                    .map<DropdownMenuItem<String>>((SkillLevel skillLevel) {
-                  return DropdownMenuItem<String>(
-                    value: skillLevel.idSkillLevel.toString(),
-                    child: Text(skillLevel.name),
-                  );
-                }).toList(),
-              ),
-            ],
+          CircleAvatar(
+            backgroundColor: Colors.grey.shade800,
+            child: SportIconGetter.getSportIcon(sport['name']),
           ),
-          const Spacer(),
+          const SizedBox(width: 16.0),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(sport['name'], style: titleStyle),
+                DropdownButton<String>(
+                  value: sport['skillLevelId'].toString(),
+                  onChanged: (value) {
+                    setState(() {
+                      sport['skillLevelId'] = int.parse(value!);
+                    });
+                  },
+                  items: skillLevels
+                      .map<DropdownMenuItem<String>>((SkillLevel skillLevel) {
+                    return DropdownMenuItem<String>(
+                      value: skillLevel.idSkillLevel.toString(),
+                      child: Text(skillLevel.name, style: subtitleStyle),
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
+          ),
           IconButton(
-            onPressed: () => setState(() {
-              selectedSports.remove(sport);
-            }),
+            onPressed: () {
+              setState(() {
+                deletedSportIds
+                    .add(sport['id']); // Track the ID of the deleted sport
+                selectedSports.removeWhere((s) => s['id'] == sport['id']);
+              });
+            },
             icon: const Icon(Icons.delete),
           ),
         ],

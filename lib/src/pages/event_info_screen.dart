@@ -47,7 +47,6 @@ class EventInfoScreen extends StatelessWidget {
           return const Text('Event Details',
               style: TextStyle(color: Colors.white));
         }),
-        // Inside AppBar actions of EventInfoScreen
         actions: <Widget>[
           Obx(() {
             bool isParticipant =
@@ -65,7 +64,6 @@ class EventInfoScreen extends StatelessWidget {
                     child: IconButton(
                       icon: Icon(Icons.qr_code),
                       onPressed: () {
-                        // Display QR code in a bottom sheet
                         showModalBottomSheet(
                           context: context,
                           builder: (BuildContext context) {
