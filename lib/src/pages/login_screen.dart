@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
         final isFirstTime = await isFirstTimeUser();
         if (mounted) {
           if (isFirstTime) {
-            Navigator.of(context).pushReplacementNamed('/skill');
+            Navigator.of(context).pushReplacementNamed('/main');
           } else {
             Navigator.of(context).pushReplacementNamed('/main');
             ScaffoldMessenger.of(context).showSnackBar(

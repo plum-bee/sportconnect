@@ -6,6 +6,7 @@ import 'package:sportconnect/src/widgets/avatar_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:sportconnect/main.dart';
 import 'package:sportconnect/src/utils/sport_icon_getter.dart';
+import 'package:sportconnect/src/pages/skill_level_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({super.key});
@@ -87,6 +88,19 @@ class ProfileScreen extends StatelessWidget {
                         title: Text(skill.sport.name),
                         subtitle: Text('Skill Level: ${skill.skillLevel.name}'),
                       )),
+                  Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SkillLevelScreen(),
+                            ),
+                          );
+                        },
+                        child: const Text('Edit Sports'),
+                      ))
                 ],
               ),
             ),
