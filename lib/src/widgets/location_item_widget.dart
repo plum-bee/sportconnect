@@ -10,6 +10,30 @@ class LocationItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const TextStyle titleStyle = TextStyle(
+      fontSize: 20,
+      fontWeight: FontWeight.bold,
+      color: Color(0xFF1AC077), // Same green used in other widgets
+    );
+
+    const TextStyle detailStyle = TextStyle(
+      fontSize: 16,
+      color: Colors.white70, // Slightly opaque white for details
+    );
+
+    Decoration containerDecoration = BoxDecoration(
+      color: const Color(0xFF1D1E33), // Dark bluish-grey
+      borderRadius: BorderRadius.circular(12),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.1),
+          spreadRadius: 1,
+          blurRadius: 5,
+          offset: const Offset(0, 2), // Consistent light shadow
+        ),
+      ],
+    );
+
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
@@ -21,42 +45,23 @@ class LocationItemWidget extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.all(8.0),
         padding: const EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 1,
-              blurRadius: 6,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
+        decoration: containerDecoration,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               location.name,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.green, // Set text color to black
-              ),
+              style: titleStyle,
             ),
             const SizedBox(height: 8),
             Text(
               location.address,
-              style: const TextStyle(
-                color: Colors.black, // Set text color to black
-              ),
+              style: detailStyle,
             ),
             const SizedBox(height: 8),
             Text(
               "Contact: ${location.contact}",
-              style: const TextStyle(
-                color: Colors.black, // Set text color to black
-              ),
+              style: detailStyle,
             ),
           ],
         ),

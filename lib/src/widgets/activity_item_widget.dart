@@ -17,30 +17,36 @@ class ActivityItemWidget extends StatelessWidget {
     Widget sportIcon =
         SportIconGetter.getSportIcon(event.sportName ?? 'Unknown');
     String formattedStartTime = event.startTime != null
-        ? DateFormat('kk:mm \'on\' EEEE d, MMM, yyyy').format(event.startTime!)
+        ? DateFormat('MMM d - yyyy, kk:mm').format(event.startTime!)
         : 'Date and time not set';
     String registrationStatus = event.isRegistrationOpen ? "Open" : "Closed";
     String participationStatus =
-        userEvent.participated ? "Participated" : "Not Participated";
+        userEvent.participated ? "Participated" : "Didn't participate";
 
     const TextStyle titleStyle = TextStyle(
         fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1AC077));
-    const TextStyle detailStyle = TextStyle(fontSize: 16, color: Colors.white);
-    const TextStyle statusStyle = TextStyle(
-        fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold);
+    const TextStyle detailStyle =
+        TextStyle(fontSize: 16, color: Colors.white70);
+    TextStyle registrationStyle = TextStyle(
+        fontSize: 14,
+        color: event.isRegistrationOpen ? Colors.green : Color(0xFFC62828),
+        fontWeight: FontWeight.bold);
+    TextStyle participationStyle = TextStyle(
+        fontSize: 12,
+        color: userEvent.participated ? Colors.green : Colors.red,
+        fontStyle: FontStyle.italic);
 
     Decoration containerDecoration = BoxDecoration(
-      color: const Color(0xFF1D1E33),
-      borderRadius: BorderRadius.circular(12.0),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey.withOpacity(0.3),
-          spreadRadius: 2,
-          blurRadius: 6,
-          offset: const Offset(0, 3),
-        ),
-      ],
-    );
+        color: const Color(0xFF1D1E33),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ]);
 
     return GestureDetector(
       onTap: () => Get.to(() => EventInfoScreen(eventId: event.idEvent)),
@@ -53,6 +59,7 @@ class ActivityItemWidget extends StatelessWidget {
           children: [
             CircleAvatar(
               backgroundColor: Colors.grey.shade800,
+              radius: 24,
               child: sportIcon,
             ),
             const SizedBox(width: 16.0),
@@ -71,25 +78,13 @@ class ActivityItemWidget extends StatelessWidget {
                   Text('Address: ${event.location?.address ?? 'Not available'}',
                       style: detailStyle),
                   const SizedBox(height: 8.0),
-                  Text('Skill Level: ${event.skillLevelName ?? 'Not set'}',
+                  Text('Skill level: ${event.skillLevelName ?? 'Not set'}',
                       style: detailStyle),
                   const SizedBox(height: 8.0),
                   Text('Registration: $registrationStatus',
-                      style: statusStyle.apply(
-                        color: event.isRegistrationOpen
-                            ? Colors.green
-                            : Colors.red,
-                      )),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(participationStatus,
-                        style: TextStyle(
-                            color: userEvent.participated
-                                ? Colors.green
-                                : Colors.red,
-                            fontSize: 12.0,
-                            fontStyle: FontStyle.italic)),
-                  ),
+                      style: registrationStyle),
+                  const SizedBox(height: 8.0),
+                  Text(participationStatus, style: participationStyle),
                 ],
               ),
             ),

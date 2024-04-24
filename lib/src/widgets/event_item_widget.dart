@@ -22,15 +22,26 @@ class EventItemWidget extends StatelessWidget {
 
     const TextStyle titleStyle = TextStyle(
         fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1AC077));
-    const TextStyle detailStyle = TextStyle(fontSize: 16, color: Colors.white);
-    const TextStyle registrationStyle = TextStyle(
-        fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold);
+    const TextStyle detailStyle =
+        TextStyle(fontSize: 16, color: Colors.white70);
+    TextStyle registrationStyle = TextStyle(
+        fontSize: 14,
+        color: event.isRegistrationOpen ? Colors.green : Color(0xFFC62828),
+        fontWeight: FontWeight.bold);
 
     Decoration containerDecoration = BoxDecoration(
         color: const Color(0xFF1D1E33),
-        borderRadius: BorderRadius.circular(12.0));
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ]);
 
-    return GestureDetector(
+    return InkWell(
       onTap: () => Get.to(() => EventInfoScreen(eventId: event.idEvent)),
       child: Container(
         margin: const EdgeInsets.all(8.0),
@@ -41,6 +52,7 @@ class EventItemWidget extends StatelessWidget {
           children: [
             CircleAvatar(
               backgroundColor: Colors.grey.shade800,
+              radius: 24,
               child: sportIcon,
             ),
             const SizedBox(width: 16.0),
@@ -63,11 +75,7 @@ class EventItemWidget extends StatelessWidget {
                       style: detailStyle),
                   const SizedBox(height: 8.0),
                   Text('Registration: $registrationStatus',
-                      style: registrationStyle.apply(
-                        color: event.isRegistrationOpen
-                            ? Colors.green
-                            : Colors.red,
-                      )),
+                      style: registrationStyle),
                 ],
               ),
             ),

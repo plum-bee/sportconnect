@@ -61,13 +61,14 @@ class _SearchScreenState extends State<SearchScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (!showMap) const SizedBox(height: 20.0),
-              if (!showMap) TextField(
-                controller: _searchController,
-                decoration: const InputDecoration(
-                  labelText: 'Search',
-                  border: OutlineInputBorder(),
+              if (!showMap)
+                TextField(
+                  controller: _searchController,
+                  decoration: const InputDecoration(
+                    labelText: 'Search',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
-              ),
               const SizedBox(height: 20.0),
               SizedBox(
                 height: screenSize.height * 0.7,
@@ -88,28 +89,25 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
       children: [
         TileLayer(
-          urlTemplate:
-              "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibHVtaXpvciIsImEiOiJjbHV3cTQ1bW8wZDk5MmpwYnYxMnJ0d2x3In0.pK3SzMwwmQ18o3DNpZGcog",
-          additionalOptions: const {
-            'access_token':
-                "pk.eyJ1IjoibHVmaXpvciIsImEiOiJjbHV3cXZhbXkwaTZvMnBudmkyZms1bXV6In0.R1wnaCdQitGymGJfImGfgg",
-            'id': "mapbox/streets-v12"
-          }
-        ),
+            urlTemplate:
+                "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibHVtaXpvciIsImEiOiJjbHV3cTQ1bW8wZDk5MmpwYnYxMnJ0d2x3In0.pK3SzMwwmQ18o3DNpZGcog",
+            additionalOptions: const {
+              'access_token':
+                  "pk.eyJ1IjoibHVmaXpvciIsImEiOiJjbHV3cXZhbXkwaTZvMnBudmkyZms1bXV6In0.R1wnaCdQitGymGJfImGfgg",
+              'id': "mapbox/streets-v12"
+            }),
         MarkerLayer(
-          markers: locationController.filteredLocations
-              .map((location) {
+          markers: locationController.filteredLocations.map((location) {
             return Marker(
-              width: 80.0,
-              height: 80.0,
-              point: location.getLatLng(location.coordinates),
-              child: GestureDetector(
-                onTap: () {
-                  Get.to(() => LocationInfoScreen(location: location));
-                },
-                child: const Icon(Icons.location_on, color: Colors.red, size: 40.0)
-              )
-            );
+                width: 80.0,
+                height: 80.0,
+                point: location.getLatLng(location.coordinates),
+                child: GestureDetector(
+                    onTap: () {
+                      Get.to(() => LocationInfoScreen(location: location));
+                    },
+                    child: const Icon(Icons.location_on,
+                        color: Colors.red, size: 40.0)));
           }).toList(),
         ),
       ],

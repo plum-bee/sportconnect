@@ -1,31 +1,37 @@
 import 'package:flutter/material.dart';
 
 class SportIconGetter {
-  static Widget getSportIcon(String sportName) {
+  static const double _iconSize = 28.0;
+
+  static Icon _styledIcon(IconData iconData, Color iconColor) {
+    return Icon(iconData, color: iconColor, size: _iconSize);
+  }
+
+  static Icon getSportIcon(String sportName) {
     switch (sportName.toLowerCase()) {
       case 'basketball':
-        return const Icon(Icons.sports_basketball, color: Colors.orange);
+        return _styledIcon(Icons.sports_basketball, Colors.orange.shade800);
       case 'football':
       case 'soccer':
-        return const Icon(Icons.sports_soccer, color: Colors.grey);
+        return _styledIcon(Icons.sports_soccer, Colors.green.shade800);
       case 'paddle tennis':
-        return const Icon(Icons.sports_tennis, color: Colors.yellow);
+        return _styledIcon(Icons.sports_tennis, Colors.blue.shade600);
       case 'table tennis':
-        return const Icon(Icons.sports_tennis, color: Colors.pink);
+        return _styledIcon(Icons.sports_tennis, Colors.red.shade700);
       case 'cycling':
-        return const Icon(Icons.directions_bike, color: Colors.deepOrange);
+        return _styledIcon(Icons.directions_bike, Colors.yellow.shade700);
       case 'handball':
-        return const Icon(Icons.sports_handball, color: Colors.purple);
+        return _styledIcon(Icons.sports_handball, Colors.purple.shade700);
       case 'rugby':
-        return const Icon(Icons.sports_rugby, color: Colors.brown);
+        return _styledIcon(Icons.sports_rugby, Colors.brown.shade800);
       case 'swimming':
-        return const Icon(Icons.pool, color: Colors.lightBlue);
+        return _styledIcon(Icons.pool, Colors.cyan.shade600);
       case 'athletics':
-        return const Icon(Icons.directions_run, color: Colors.red);
+        return _styledIcon(Icons.directions_run, Colors.red.shade600);
       case 'golf':
-        return const Icon(Icons.sports_golf, color: Colors.green);
+        return _styledIcon(Icons.sports_golf, Colors.green.shade700);
       default:
-        return const Icon(Icons.sports, color: Colors.blue);
+        return _styledIcon(Icons.sports, Colors.grey.shade700);
     }
   }
 }

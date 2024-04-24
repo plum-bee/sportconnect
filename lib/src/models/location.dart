@@ -49,21 +49,21 @@ class Location {
     );
   }
 
-LatLng getLatLng(String coordinates) {
-  final parts = coordinates.split(', ');
-  String latPart = parts[0].split('º')[0].trim();
-  String lngPart = parts[1].split('º')[0].trim();
+  LatLng getLatLng(String coordinates) {
+    final parts = coordinates.split(', ');
+    String latPart = parts[0].split('º')[0].trim();
+    String lngPart = parts[1].split('º')[0].trim();
 
-  double lat = double.parse(latPart);
-  double lng = double.parse(lngPart);
-  
-  if (parts[0].contains('S')) {
-    lat = -lat;
-  }
-  if (parts[1].contains('W')) {
-    lng = -lng;
-  }
+    double lat = double.parse(latPart);
+    double lng = double.parse(lngPart);
 
-  return LatLng(lat, lng);
-}
+    if (parts[0].contains('S')) {
+      lat = -lat;
+    }
+    if (parts[1].contains('W')) {
+      lng = -lng;
+    }
+
+    return LatLng(lat, lng);
+  }
 }
