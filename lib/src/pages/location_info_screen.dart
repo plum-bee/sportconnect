@@ -58,7 +58,6 @@ class LocationInfoScreen extends StatelessWidget {
                     builder: (context) => EventCreationPage(location: location),
                   ));
                 },
-                subtitle: const Icon(Icons.map, color: Colors.white),
               ),
             ),
           ],
