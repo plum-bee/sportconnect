@@ -38,7 +38,7 @@ class _MainScreenState extends State<MainScreen> {
         automaticallyImplyLeading: false,
         title: Image.asset(
           'assets/images/logo_text.png',
-          width: screenSize.width * 0.4,
+          width: screenSize.width * 0.45,
           height: kToolbarHeight,
         ),
         centerTitle: true,

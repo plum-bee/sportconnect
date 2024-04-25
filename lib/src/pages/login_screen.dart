@@ -95,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
-                      '/images/logo_full.png',
+                      'assets/images/logo_full.png',
                       width: screenSize.width * 0.3,
                       height: screenSize.height * 0.3,
                     ),
@@ -119,18 +119,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: constraints.maxWidth * 0.6,
                             child: FormBuilderTextField(
                               name: 'password',
-                              obscureText: _isPasswordHidden, // Use the state
+                              obscureText: _isPasswordHidden,
                               decoration: InputDecoration(
                                 labelText: 'Password',
                                 suffixIcon: IconButton(
                                   icon: Icon(
-                                    // Toggle the icon
                                     _isPasswordHidden
                                         ? Icons.visibility_off
                                         : Icons.visibility,
                                   ),
                                   onPressed: () {
-                                    // Update the state to toggle password visibility
                                     setState(() {
                                       _isPasswordHidden = !_isPasswordHidden;
                                     });

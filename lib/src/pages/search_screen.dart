@@ -41,16 +41,22 @@ class _SearchScreenState extends State<SearchScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Locations'),
+        title: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          child: Text('Available locations'),
+        ),
         automaticallyImplyLeading: false,
         actions: [
-          IconButton(
-            icon: Icon(showMap ? Icons.list : Icons.map),
-            onPressed: () {
-              setState(() {
-                showMap = !showMap;
-              });
-            },
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: IconButton(
+              icon: Icon(showMap ? Icons.list : Icons.map),
+              onPressed: () {
+                setState(() {
+                  showMap = !showMap;
+                });
+              },
+            ),
           ),
         ],
       ),
@@ -62,11 +68,14 @@ class _SearchScreenState extends State<SearchScreen> {
             children: [
               if (!showMap) const SizedBox(height: 20.0),
               if (!showMap)
-                TextField(
-                  controller: _searchController,
-                  decoration: const InputDecoration(
-                    labelText: 'Search',
-                    border: OutlineInputBorder(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: const InputDecoration(
+                      labelText: 'Search',
+                      border: OutlineInputBorder(),
+                    ),
                   ),
                 ),
               const SizedBox(height: 20.0),

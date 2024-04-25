@@ -13,23 +13,23 @@ class LocationItemWidget extends StatelessWidget {
     const TextStyle titleStyle = TextStyle(
       fontSize: 20,
       fontWeight: FontWeight.bold,
-      color: Color(0xFF1AC077), // Same green used in other widgets
+      color: Color(0xFF1AC077),
     );
 
     const TextStyle detailStyle = TextStyle(
       fontSize: 16,
-      color: Colors.white70, // Slightly opaque white for details
+      color: Colors.white70,
     );
 
     Decoration containerDecoration = BoxDecoration(
-      color: const Color(0xFF1D1E33), // Dark bluish-grey
+      color: const Color(0xFF1D1E33),
       borderRadius: BorderRadius.circular(12),
       boxShadow: [
         BoxShadow(
           color: Colors.black.withOpacity(0.1),
           spreadRadius: 1,
           blurRadius: 5,
-          offset: const Offset(0, 2), // Consistent light shadow
+          offset: const Offset(0, 2),
         ),
       ],
     );

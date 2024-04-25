@@ -20,7 +20,7 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
   List<Map<String, dynamic>> selectedSports = [];
   List<Sport> sports = [];
   List<SkillLevel> skillLevels = [];
-  List<int> deletedSportIds = []; // Track IDs of sports to delete
+  List<int> deletedSportIds = [];
   bool isLoading = true;
 
   final Color primaryColor = const Color(0xFF145D55);
@@ -77,25 +77,24 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
 
   void _onFinish() async {
     final String userId = Get.find<MemberController>().currentUser.value!.id;
-    // Perform deletions
-    for (var sportId in deletedSportIds) {
-      await supabase
-          .from('user_sport_skill_level')
-          .delete()
-          .match({'id_user': userId, 'id_sport': sportId}).execute();
-    }
-
-    // Perform upserts
-    final entries = selectedSports.map((sport) {
-      return {
-        'id_user': userId,
-        'id_sport': sport['id'],
-        'id_skill_level': sport['skillLevelId']
-      };
-    }).toList();
-
     try {
-      await supabase.from('user_sport_skill_level').upsert(entries).execute();
+      for (var sportId in deletedSportIds) {
+        await supabase
+            .from('user_sport_skill_level')
+            .delete()
+            .match({'id_user': userId, 'id_sport': sportId});
+      }
+      for (var sport in selectedSports) {
+        await supabase
+            .from('user_sport_skill_level')
+            .delete()
+            .match({'id_user': userId, 'id_sport': sport['id']});
+        await supabase.from('user_sport_skill_level').insert({
+          'id_user': userId,
+          'id_sport': sport['id'],
+          'id_skill_level': sport['skillLevelId']
+        });
+      }
       Get.find<MemberController>().fetchCurrentUser();
       Navigator.pop(context);
     } catch (e) {
@@ -188,8 +187,13 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
                 DropdownButton<String>(
                   value: sport['skillLevelId'].toString(),
                   onChanged: (value) {
+                    int newValue = int.parse(value!);
                     setState(() {
-                      sport['skillLevelId'] = int.parse(value!);
+                      int index = selectedSports
+                          .indexWhere((s) => s['id'] == sport['id']);
+                      if (index != -1) {
+                        selectedSports[index]['skillLevelId'] = newValue;
+                      }
                     });
                   },
                   items: skillLevels
@@ -206,8 +210,7 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
           IconButton(
             onPressed: () {
               setState(() {
-                deletedSportIds
-                    .add(sport['id']); // Track the ID of the deleted sport
+                deletedSportIds.add(sport['id']);
                 selectedSports.removeWhere((s) => s['id'] == sport['id']);
               });
             },

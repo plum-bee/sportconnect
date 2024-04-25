@@ -27,19 +27,11 @@ class LocationService {
     final mediaResponse = await supabase
         .from('locations_media')
         .select()
-        .eq('id_location', locationId);
-
-    List<Media> mediaList = List<Media>.from(
-      mediaResponse.map(
-        (mediaData) => Media(
-          path: mediaData['media_path'],
-          type: mediaData['media_type'] == 'video'
-              ? MediaType.video
-              : MediaType.image,
-        ),
-      ),
-    );
-
-    return mediaList;
+        .eq('location_id', locationId);
+    List<Media> media = [];
+    for (var data in mediaResponse) {
+      media.add(Media.fromMap(data));
+    }
+    return media;
   }
 }

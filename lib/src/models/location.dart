@@ -1,5 +1,6 @@
 import 'package:latlong2/latlong.dart';
 import 'package:sportconnect/src/models/media.dart';
+import 'package:get/get.dart';
 
 class Location {
   final int? idLocation;
@@ -8,7 +9,7 @@ class Location {
   final String contact;
   final String coordinates;
 
-  final List<Media>? media;
+  RxList<Media>? media = RxList<Media>([]);
 
   Location({
     required this.idLocation,
@@ -16,7 +17,6 @@ class Location {
     required this.address,
     required this.contact,
     required this.coordinates,
-    this.media,
   });
 
   factory Location.fromJson(Map<String, dynamic> json) {

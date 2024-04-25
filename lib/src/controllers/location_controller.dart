@@ -13,25 +13,33 @@ class LocationController extends GetxController {
     fetchAllLocations();
   }
 
-  void fetchAllLocations() async {
+  Future<void> fetchAllLocations() async {
     List<Location> locations = await locationService.getAllLocations();
-    if (locations.isNotEmpty) {
-      allLocations.assignAll(locations);
-      filteredLocations.assignAll(locations); // Ensure this is done
-    }
+    await Future.forEach<Location>(locations, (location) async {
+      var mediaList =
+          await locationService.getLocationMedia(location.idLocation!);
+      location.media?.assignAll(mediaList);
+    });
+    allLocations.assignAll(locations);
+    filteredLocations.assignAll(locations);
   }
 
   void filterLocations(String searchTerm) {
     if (searchTerm.isEmpty) {
       filteredLocations.assignAll(allLocations);
     } else {
-      filteredLocations.assignAll(
-        allLocations.where((location) =>
-          location.name.toLowerCase().contains(searchTerm.toLowerCase()) ||
-          location.address.toLowerCase().contains(searchTerm.toLowerCase()) ||
-          location.contact.toLowerCase().contains(searchTerm.toLowerCase())
-        ).toList()
-      );
+      filteredLocations.assignAll(allLocations
+          .where((location) =>
+              location.name.toLowerCase().contains(searchTerm.toLowerCase()) ||
+              location.address
+                  .toLowerCase()
+                  .contains(searchTerm.toLowerCase()) ||
+              location.contact.toLowerCase().contains(searchTerm.toLowerCase()))
+          .toList());
     }
+  }
+
+  void refreshLocations() async {
+    fetchAllLocations();
   }
 }

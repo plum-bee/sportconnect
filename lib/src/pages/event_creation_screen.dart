@@ -7,14 +7,14 @@ import 'package:sportconnect/src/models/skill_level.dart';
 import 'package:sportconnect/src/services/location_service.dart';
 import 'package:sportconnect/src/services/sport_service.dart';
 import 'package:sportconnect/src/services/skill_level_service.dart';
-import 'package:sportconnect/main.dart';
 import 'package:get/get.dart';
 import 'package:sportconnect/src/controllers/event_controller.dart';
 import 'package:sportconnect/src/models/event.dart';
+import 'package:sportconnect/main.dart';
 
 class EventCreationPage extends StatefulWidget {
   final Location? location;
-  EventCreationPage({Key? key, this.location = null}) : super(key: key);
+  EventCreationPage({Key? key, this.location}) : super(key: key);
 
   @override
   _EventCreationPageState createState() => _EventCreationPageState();
@@ -59,6 +59,12 @@ class _EventCreationPageState extends State<EventCreationPage> {
             List<SkillLevel> skillLevels =
                 snapshot.data![2] as List<SkillLevel>;
 
+            Location? initialLocation = widget.location != null
+                ? locations.firstWhere(
+                    (loc) => loc.idLocation == widget.location!.idLocation,
+                  )
+                : null;
+
             return FormBuilder(
               key: _fbKey,
               child: SingleChildScrollView(
@@ -67,6 +73,7 @@ class _EventCreationPageState extends State<EventCreationPage> {
                   children: [
                     FormBuilderDropdown<Location>(
                       name: 'location',
+                      initialValue: initialLocation,
                       decoration: InputDecoration(
                         labelText: 'Select Location',
                         helperText: 'Choose the location of the event',
