@@ -8,24 +8,31 @@ class HomeScreen extends StatelessWidget {
 
   final EventController eventController = Get.put(EventController());
 
+  Future<void> _refreshData() async {
+    await eventController.fetchEvents(); 
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Obx(() {
-        if (eventController.upcomingEventsList.value.isEmpty) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else {
-          return ListView.builder(
-            itemCount: eventController.upcomingEventsList.value.length,
-            itemBuilder: (context, index) {
-              final event = eventController.upcomingEventsList.value[index];
-              return EventItemWidget(event: event);
-            },
-          );
-        }
-      }),
+      body: RefreshIndicator(
+        onRefresh: _refreshData,
+        child: Obx(() {
+          if (eventController.upcomingEventsList.value.isEmpty) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            return ListView.builder(
+              itemCount: eventController.upcomingEventsList.value.length,
+              itemBuilder: (context, index) {
+                final event = eventController.upcomingEventsList.value[index];
+                return EventItemWidget(event: event);
+              },
+            );
+          }
+        }),
+      ),
     );
   }
 }

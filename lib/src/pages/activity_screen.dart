@@ -9,22 +9,29 @@ class ActivityScreen extends StatelessWidget {
 
   final EventController eventController = Get.find<EventController>();
 
+  Future<void> _refreshData() async {
+    await eventController.fetchUserEvents(); 
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Obx(() {
-        if (eventController.userEventsList.value.isEmpty) {
-          return const Center(child: CircularProgressIndicator());
-        } else {
-          return ListView.builder(
-            itemCount: eventController.userEventsList.value.length,
-            itemBuilder: (context, index) {
-              final userEvent = eventController.userEventsList.value[index];
-              return ActivityItemWidget(userEvent: userEvent);
-            },
-          );
-        }
-      }),
+      body: RefreshIndicator(
+        onRefresh: _refreshData,
+        child: Obx(() {
+          if (eventController.userEventsList.value.isEmpty) {
+            return const Center(child: CircularProgressIndicator());
+          } else {
+            return ListView.builder(
+              itemCount: eventController.userEventsList.value.length,
+              itemBuilder: (context, index) {
+                final userEvent = eventController.userEventsList.value[index];
+                return ActivityItemWidget(userEvent: userEvent);
+              },
+            );
+          }
+        }),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
