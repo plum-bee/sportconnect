@@ -51,8 +51,8 @@ class _AvatarState extends State<Avatar> {
     final picker = ImagePicker();
     final imageFile = await picker.pickImage(
       source: ImageSource.gallery,
-      maxWidth: 300,
-      maxHeight: 300,
+      maxWidth: 2000,
+      maxHeight: 1000,
     );
     if (imageFile == null) {
       return;
