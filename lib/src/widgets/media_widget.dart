@@ -214,7 +214,7 @@ class MediaWidgetState extends State<MediaWidget> {
     }
 
     if (pickedFile != null) {
-      uploadEventMedia(widget.eventId, pickedFile.path, mediaType);
+      await uploadEventMedia(widget.eventId, pickedFile.path, mediaType);
       widget.refreshEventInfo();
     }
   }

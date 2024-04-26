@@ -18,6 +18,10 @@ class EventInfoScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final EventController eventController = Get.find<EventController>();
 
+    Future<void> _refreshData() async {
+      await eventController.fetchEvents();
+    }
+
     const Color primaryColor = Color(0xFF145D55);
     const Color accentColor = Color(0xFF9FBEB9);
 
@@ -200,7 +204,7 @@ class EventInfoScreen extends StatelessWidget {
                   MediaWidget(
                     mediaList: event.media!,
                     eventId: event.idEvent,
-                    refreshEventInfo: () => eventController.refreshEventInfo(),
+                    refreshEventInfo: () => _refreshData(),
                   )
                 else
                   MediaWidget(
