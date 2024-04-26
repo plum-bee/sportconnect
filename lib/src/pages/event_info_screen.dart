@@ -19,7 +19,6 @@ class EventInfoScreen extends StatelessWidget {
     final EventController eventController = Get.find<EventController>();
 
     const Color primaryColor = Color(0xFF145D55);
-    //const Color secondaryColor = Color(0xFF2CC27F);
     const Color accentColor = Color(0xFF9FBEB9);
 
     TextStyle titleStyle = const TextStyle(
@@ -55,6 +54,9 @@ class EventInfoScreen extends StatelessWidget {
                 .firstWhereOrNull((e) => e.idEvent == eventId);
 
             bool isOrganizer = event?.organizerId == currentUserId;
+            bool eventIsActive =
+                (event?.startTime?.isAfter(DateTime.now()) ?? false) &&
+                    (event?.isRegistrationOpen ?? false);
 
             if (isOrganizer) {
               return Row(
@@ -67,7 +69,11 @@ class EventInfoScreen extends StatelessWidget {
                         showModalBottomSheet(
                           context: context,
                           builder: (BuildContext context) {
-                            return QRCodeWidget(eventData: eventId.toString(), imageUrl: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=$eventId",);
+                            return QRCodeWidget(
+                              eventData: eventId.toString(),
+                              imageUrl:
+                                  "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=$eventId",
+                            );
                           },
                         );
                       },
@@ -103,50 +109,52 @@ class EventInfoScreen extends StatelessWidget {
                   ),
                 ],
               );
+            } else if (eventIsActive) {
+              return Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  width: 100,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    gradient: isParticipant
+                        ? LinearGradient(
+                            colors: [Colors.red[300]!, Colors.red[700]!])
+                        : LinearGradient(
+                            colors: [Colors.green[300]!, Colors.green[700]!]),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: TextButton(
+                    onPressed: () async {
+                      if (isParticipant) {
+                        await eventController.leaveEvent(eventId);
+                      } else {
+                        await eventController.joinEvent(eventId);
+                      }
+                    },
+                    style: TextButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      backgroundColor: Colors.transparent,
+                      foregroundColor: Colors.white,
+                      disabledForegroundColor: Colors.grey,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(isParticipant ? Icons.logout : Icons.login,
+                            color: Colors.white, size: 20),
+                        const SizedBox(width: 8),
+                        Text(isParticipant ? 'Leave' : 'Join',
+                            style: buttonTextStyle),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            } else {
+              return Container();
             }
-
-            return Padding(
-              padding: const EdgeInsets.only(right: 16.0),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                width: 100,
-                height: 40,
-                decoration: BoxDecoration(
-                  gradient: isParticipant
-                      ? LinearGradient(
-                          colors: [Colors.red[300]!, Colors.red[700]!])
-                      : LinearGradient(
-                          colors: [Colors.green[300]!, Colors.green[700]!]),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: TextButton(
-                  onPressed: () async {
-                    if (isParticipant) {
-                      await eventController.leaveEvent(eventId);
-                    } else {
-                      await eventController.joinEvent(eventId);
-                    }
-                  },
-                  style: TextButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
-                    backgroundColor: Colors.transparent,
-                    foregroundColor: Colors.white,
-                    disabledForegroundColor: Colors.grey,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(isParticipant ? Icons.logout : Icons.login,
-                          color: Colors.white, size: 20),
-                      const SizedBox(width: 8),
-                      Text(isParticipant ? 'Leave' : 'Join',
-                          style: buttonTextStyle),
-                    ],
-                  ),
-                ),
-              ),
-            );
           }),
         ],
       ),

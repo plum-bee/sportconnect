@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'dart:io';
+import 'package:sportconnect/main.dart';
 
 class QRScannerScreen extends StatefulWidget {
   const QRScannerScreen({Key? key}) : super(key: key);
@@ -38,7 +39,7 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
       ),
       body: Column(
         children: <Widget>[
-          Expanded( 
+          Expanded(
             flex: 5,
             child: QRView(
               key: qrKey,
@@ -59,10 +60,23 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
 
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
-    controller.scannedDataStream.listen((scanData) {
-      controller
-          .pauseCamera(); // Optional: pauses the camera after a successful scan
-      Navigator.pop(context, scanData.code); // Optionally return the result
+    controller.scannedDataStream.listen((scanData) async {
+      controller.pauseCamera();
+
+      String idEvent = scanData.code!;
+      String idUser = supabase.auth.currentUser!.id;
+
+      final response = await supabase.from('event_participants').update(
+          {'assisted': true}).match({'id_event': idEvent, 'id_user': idUser});
+
+      if (response == null) {
+        Navigator.of(context).pushReplacementNamed('/main');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Participation confirmed!'),
+          ),
+        );
+      }
     });
   }
 }

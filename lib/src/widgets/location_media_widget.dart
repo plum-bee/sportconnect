@@ -141,26 +141,6 @@ class MediaWidgetState extends State<LocationMediaWidget> {
         spacing: 4.0,
         runSpacing: 4.0,
         children: [
-          ElevatedButton.icon(
-            icon: const Icon(Icons.image, size: 16),
-            label: const Text("Upload Image", style: TextStyle(fontSize: 12)),
-            onPressed: () => _pickMedia('image'),
-            style: ElevatedButton.styleFrom(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-              textStyle: const TextStyle(letterSpacing: 0.5),
-            ),
-          ),
-          ElevatedButton.icon(
-            icon: const Icon(Icons.video_call, size: 16),
-            label: const Text("Upload Video", style: TextStyle(fontSize: 12)),
-            onPressed: () => _pickMedia('video'),
-            style: ElevatedButton.styleFrom(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-              textStyle: const TextStyle(letterSpacing: 0.5),
-            ),
-          ),
           IconButton(
             icon: const Icon(Icons.image, size: 20),
             onPressed: () =>

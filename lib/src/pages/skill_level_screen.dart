@@ -132,7 +132,6 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
         title: const Text('Skill Level', style: TextStyle(color: Colors.white)),
       ),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Expanded(
             child: ListView.builder(
@@ -142,7 +141,8 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -152,8 +152,12 @@ class _SkillLevelScreenState extends State<SkillLevelScreen> {
                   child: const Icon(Icons.add),
                 ),
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColor,
+                    foregroundColor: Colors.white,
+                  ),
                   onPressed: _onFinish,
-                  child: Text('Finish', style: subtitleStyle),
+                  child: const Text('Update'),
                 ),
               ],
             ),
